@@ -3,1204 +3,625 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BelanjaKu Mobile - Catatan Belanja Voice AI</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            700: '#0f766e',
-                            800: '#115e59',
-                            900: '#134e4a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <title>MARS 1930 - DATA BELANJA V.1</title>
     <style>
+        :root {
+            --primary: #dc2626;
+            --primary-hover: #b91c1c;
+            --primary-light: #fef2f2;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        /* Theme Presets */
+        [data-theme="red"] {
+            --primary: #dc2626;
+            --primary-hover: #b91c1c;
+            --primary-light: #fef2f2;
+        }
+        [data-theme="blue"] {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+        }
+        [data-theme="green"] {
+            --primary: #16a34a;
+            --primary-hover: #15803d;
+            --primary-light: #f0fdf4;
+        }
+        [data-theme="purple"] {
+            --primary: #9333ea;
+            --primary-hover: #7e22ce;
+            --primary-light: #faf5ff;
+        }
+        [data-theme="dark"] {
+            --primary: #475569;
+            --primary-hover: #334155;
+            --primary-light: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 12px;
+            padding-bottom: 80px;
         }
 
-        /* Mobile Container Guard */
-        .mobile-shell {
-            max-width: 480px;
+        .container {
+            max-width: 600px;
             margin: 0 auto;
-            min-height: 100vh;
+        }
+
+        .header {
             display: flex;
-            flex-direction: column;
-            background-color: #f8fafc;
-            box-shadow: 0 0 25px rgba(0,0,0,0.08);
-            position: relative;
-            padding-bottom: 90px;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 12px;
         }
 
-        /* Microphone Pulse Animation */
-        @keyframes fab-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); transform: scale(1); }
-            70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); transform: scale(1.05); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); transform: scale(1); }
+        .header h1 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
         }
 
-        .mic-recording {
-            animation: fab-pulse 1.4s infinite !important;
-            background-color: #ef4444 !important;
-            color: #ffffff !important;
+        .btn-theme {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        /* Sound Wave Animation */
-        .sound-bar {
-            display: inline-block;
-            width: 3px;
-            height: 16px;
-            border-radius: 2px;
-            background-color: #ef4444;
-            animation: wave 1.2s infinite ease-in-out;
-        }
-        .sound-bar:nth-child(1) { animation-delay: 0.0s; }
-        .sound-bar:nth-child(2) { animation-delay: 0.2s; }
-        .sound-bar:nth-child(3) { animation-delay: 0.4s; }
-        .sound-bar:nth-child(4) { animation-delay: 0.1s; }
-        .sound-bar:nth-child(5) { animation-delay: 0.3s; }
-
-        @keyframes wave {
-            0%, 100% { height: 4px; }
-            50% { height: 20px; }
+        .card {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 12px;
         }
 
-        /* Smooth slide-up transition for modals */
-        .modal-slide-up {
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .voice-section {
+            text-align: center;
+            padding: 20px 10px;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .mic-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
         }
 
-        /* Toast Popup */
-        .toast-pop {
-            animation: toastPop 0.3s ease forwards;
-        }
-        @keyframes toastPop {
-            from { opacity: 0; transform: translate(-50%, -10px); }
-            to { opacity: 1; transform: translate(-50%, 0); }
+        .mic-btn.recording {
+            animation: pulse 1.2s infinite;
+            background: #ef4444;
         }
 
-        /* Custom scrollbar for mobile lists */
-        ::-webkit-scrollbar {
-            width: 4px;
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+
+        .status-text {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #475569;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        .btn-add {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .timer-badge {
+            display: none;
+            background: #fef3c7;
+            color: #d97706;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .total-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            font-weight: 700;
+            font-size: 15px;
+            border-top: 2px solid var(--primary);
+            margin-top: 8px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-danger {
+            color: #dc2626;
+            border-color: #fca5a5;
+        }
+
+        /* Modal Theme Selector */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 320px;
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .theme-color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
         }
     </style>
 </head>
-<body class="bg-slate-200">
+<body>
 
-    <div class="mobile-shell">
-
-        <!-- Toast Notification Alert Top Center -->
-        <div id="mobileToast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[420px] pointer-events-none hidden">
-            <div id="toastInner" class="bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700/80 toast-pop">
-                <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
-                <span id="toastMessage" class="flex-1 leading-snug">Pesan pemberitahuan...</span>
-            </div>
-        </div>
-
-        <!-- Top Header Status Bar -->
-        <header class="bg-gradient-to-r from-brand-700 via-brand-800 to-slate-900 text-white px-5 pt-5 pb-6 rounded-b-[2rem] shadow-md sticky top-0 z-30">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10">
-                        <i class="fa-solid fa-cart-shopping text-brand-100 text-base"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-base font-bold tracking-tight leading-none flex items-center gap-1.5">
-                            BelanjaKu <span class="bg-teal-500/30 text-teal-200 text-[10px] px-2 py-0.5 rounded-full font-semibold border border-teal-300/20">Mobile</span>
-                        </h1>
-                        <p class="text-[11px] text-teal-100/70 mt-0.5">Catatan Belanja Suara Pintar</p>
-                    </div>
-                </div>
-
-                <!-- Action Button Options -->
-                <div class="flex items-center gap-1">
-                    <button id="btnOpenMenu" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/90 hover:bg-white/20 active:scale-95 transition">
-                        <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Date Selector Pill -->
-            <div class="flex items-center justify-between bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/10 mt-1">
-                <div class="flex items-center gap-2">
-                    <i class="fa-regular fa-calendar-days text-teal-300 text-xs"></i>
-                    <span class="text-xs text-teal-100 font-medium">Tanggal:</span>
-                </div>
-                <input type="date" id="inputFilterDate" class="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer">
-            </div>
-
-            <!-- Top Summary Cards Pill -->
-            <div class="grid grid-cols-2 gap-2.5 mt-3">
-                <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10">
-                    <p class="text-[10px] text-teal-100/70 font-semibold uppercase tracking-wider">Total Hari Ini</p>
-                    <p id="topTodayTotal" class="text-sm font-black text-amber-300 mt-0.5">Rp 0</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10">
-                    <p class="text-[10px] text-teal-100/70 font-semibold uppercase tracking-wider">Jumlah Item</p>
-                    <p id="topTodayItems" class="text-sm font-black text-white mt-0.5">0 Item</p>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content Scroll Area -->
-        <main class="flex-1 px-4 py-4 space-y-4">
-
-            <!-- TAB 1: LIST / CATATAN BELANJA VIEW -->
-            <div id="viewList" class="space-y-3">
-                
-                <!-- Voice Transcript Live Bar -->
-                <div id="voiceLiveBar" class="bg-slate-900 text-white p-3.5 rounded-2xl text-xs space-y-2 shadow-sm border border-slate-800">
-                    <div class="flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-800 pb-1.5">
-                        <span class="flex items-center gap-1.5 font-medium text-teal-400">
-                            <i class="fa-solid fa-ear-listen text-teal-400 animate-pulse"></i> Deteksi Suara:
-                        </span>
-                        <span id="voiceStatusBadge" class="bg-teal-500/20 text-teal-300 px-2 py-0.5 rounded-full font-mono text-[10px]">Ready</span>
-                    </div>
-                    <p id="liveTranscriptText" class="text-slate-300 font-mono text-xs italic min-h-[1.5rem] break-words">
-                        "Tekan tombol mikrofon di bawah & sebut belanjaan Anda..."
-                    </p>
-                    
-                    <!-- Extracted breakdown badge -->
-                    <div class="grid grid-cols-3 gap-1 pt-1 text-[10px] font-mono text-slate-300 border-t border-slate-800">
-                        <div>Item: <span id="parsedLiveItem" class="text-amber-300 font-semibold">-</span></div>
-                        <div>Qty: <span id="parsedLiveQty" class="text-emerald-300 font-semibold">-</span></div>
-                        <div>Harga: <span id="parsedLivePrice" class="text-cyan-300 font-semibold">-</span></div>
-                    </div>
-                </div>
-
-                <!-- Filter Header Info -->
-                <div class="flex items-center justify-between px-1">
-                    <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-receipt text-teal-600"></i> Daftar Catatan <span id="dateHeaderTitle" class="text-teal-700">(Hari Ini)</span>
-                    </h2>
-                    <span id="itemCounterBadge" class="bg-teal-100 text-teal-800 text-[10px] font-bold px-2 py-0.5 rounded-full">0 Data</span>
-                </div>
-
-                <!-- Shopping Items Cards Container -->
-                <div id="expenseCardsList" class="space-y-2.5">
-                    <!-- Cards rendered via JavaScript -->
-                </div>
-
-                <!-- Empty State -->
-                <div id="emptyStateMobile" class="bg-white rounded-2xl p-8 text-center border border-slate-200/80 shadow-sm hidden">
-                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
-                        <i class="fa-solid fa-basket-shopping text-xl"></i>
-                    </div>
-                    <p class="text-xs font-bold text-slate-700">Belum ada catatan belanja</p>
-                    <p class="text-[11px] text-slate-400 mt-1">Tekan mic di tengah bawah untuk langsung merekam suara Anda.</p>
-                </div>
-            </div>
-
-            <!-- TAB 2: MANUAL FORM INPUT VIEW -->
-            <div id="viewForm" class="hidden space-y-3">
-                <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm space-y-3">
-                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
-                        <h2 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fa-solid fa-pen-to-square text-teal-600"></i> <span id="formHeaderTitle">Input Manual Belanja</span>
-                        </h2>
-                        <button type="button" id="btnCancelEdit" class="text-[11px] text-rose-600 font-medium hidden">
-                            Batal Edit
-                        </button>
-                    </div>
-
-                    <form id="mobileExpenseForm" class="space-y-3">
-                        <input type="hidden" id="formEditId" value="">
-
-                        <!-- Tanggal -->
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Tanggal</label>
-                            <input type="date" id="formInputDate" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none">
-                        </div>
-
-                        <!-- Item Name with Voice Mic Button -->
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Nama Item / Deskripsi</label>
-                            <div class="relative flex items-center">
-                                <input type="text" id="formInputItem" placeholder="Misal: Minyak Goreng, Telur, Beras" required class="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none">
-                                <button type="button" id="btnMicItemOnly" class="absolute right-2 text-slate-400 hover:text-teal-600 p-1.5 rounded-lg active:scale-90 transition">
-                                    <i class="fa-solid fa-microphone text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Qty & Price Grid -->
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Jumlah (Qty)</label>
-                                <div class="relative flex items-center">
-                                    <input type="number" id="formInputQty" step="any" min="0.01" placeholder="1" required class="w-full pl-3 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none">
-                                    <button type="button" id="btnMicQtyOnly" class="absolute right-1 text-slate-400 hover:text-teal-600 p-1.5 rounded-lg active:scale-90 transition">
-                                        <i class="fa-solid fa-microphone text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Harga Satuan (Rp)</label>
-                                <div class="relative flex items-center">
-                                    <input type="number" id="formInputPrice" step="any" min="0.01" placeholder="0" required class="w-full pl-3 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none">
-                                    <button type="button" id="btnMicPriceOnly" class="absolute right-1 text-slate-400 hover:text-teal-600 p-1.5 rounded-lg active:scale-90 transition">
-                                        <i class="fa-solid fa-microphone text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Subtotal Preview -->
-                        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200/60 flex justify-between items-center text-xs">
-                            <span class="text-slate-500 font-medium">Subtotal:</span>
-                            <span id="formSubtotalPreview" class="font-bold text-teal-700">Rp 0</span>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" id="btnSubmitForm" class="w-full py-2.5 bg-brand-600 active:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-check"></i> <span id="btnSubmitFormText">Simpan Belanjaan</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- TAB 3: REKAP & SETTINGS VIEW -->
-            <div id="viewStats" class="hidden space-y-3">
-                <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm space-y-3">
-                    <h2 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                        <i class="fa-solid fa-chart-pie text-teal-600"></i> Rekapan Belanja
-                    </h2>
-
-                    <div class="space-y-2">
-                        <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center">
-                            <span class="text-xs text-slate-600 font-medium">Total Keseluruhan</span>
-                            <span id="statGrandTotalAll" class="text-sm font-black text-teal-700">Rp 0</span>
-                        </div>
-                        <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center">
-                            <span class="text-xs text-slate-600 font-medium">Total Hari Ini</span>
-                            <span id="statTodayTotalAll" class="text-sm font-black text-amber-600">Rp 0</span>
-                        </div>
-                        <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center">
-                            <span class="text-xs text-slate-600 font-medium">Jumlah Transaksi</span>
-                            <span id="statTotalRowsAll" class="text-xs font-bold text-slate-800">0 Data</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm space-y-2">
-                    <h2 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Opsi Ekspor Data</h2>
-                    
-                    <button id="btnExportCSV" class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center justify-between transition">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-file-csv text-emerald-600 text-sm"></i> Unduh File CSV</span>
-                        <i class="fa-solid fa-chevron-right text-slate-400 text-[10px]"></i>
-                    </button>
-
-                    <button id="btnDownloadHTML" class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center justify-between transition">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-file-code text-indigo-600 text-sm"></i> Simpan File Aplikasi HTML</span>
-                        <i class="fa-solid fa-chevron-right text-slate-400 text-[10px]"></i>
-                    </button>
-
-                    <button id="btnClearAll" class="w-full py-2.5 px-3 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-xl flex items-center justify-between transition border border-rose-100 mt-2">
-                        <span class="flex items-center gap-2"><i class="fa-regular fa-trash-can text-rose-600 text-sm"></i> Hapus Semua Catatan</span>
-                        <i class="fa-solid fa-chevron-right text-rose-300 text-[10px]"></i>
-                    </button>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Floating Review & Countdown Modal (Pops up when voice input succeeds) -->
-        <div id="reviewModalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center hidden">
-            <div class="w-full max-w-[480px] bg-slate-950 text-white rounded-t-[2rem] p-5 border-t border-teal-500/30 shadow-2xl modal-slide-up space-y-3">
-                
-                <!-- Countdown Header Bar -->
-                <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-amber-400 animate-spin text-sm"></i>
-                        <span class="text-xs font-bold text-teal-300">Konfirmasi Suara Otomatis</span>
-                    </div>
-                    <span id="reviewTimerText" class="text-base font-black text-amber-400 font-mono">4.0s</span>
-                </div>
-
-                <!-- Smooth Progress Bar -->
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div id="reviewProgressBar" class="bg-amber-400 h-full w-full transition-all duration-100"></div>
-                </div>
-
-                <!-- Preview Box -->
-                <div class="bg-slate-900/90 p-3.5 rounded-2xl border border-slate-800 space-y-1.5 text-xs">
-                    <p class="text-[11px] text-slate-400">Hasil Pembacaan Suara:</p>
-                    <p id="reviewParsedItem" class="text-sm font-bold text-amber-200">Item: -</p>
-                    <div class="flex justify-between text-xs text-slate-300 pt-1 border-t border-slate-800">
-                        <span id="reviewParsedQty">Qty: -</span>
-                        <span id="reviewParsedPrice">Harga: -</span>
-                    </div>
-                    <div class="text-right pt-1 border-t border-slate-800/60">
-                        <span class="text-[11px] text-slate-400">Total: </span>
-                        <span id="reviewParsedTotal" class="text-sm font-bold text-teal-300">Rp 0</span>
-                    </div>
-                </div>
-
-                <!-- Action Control Buttons -->
-                <div class="grid grid-cols-3 gap-2 pt-1">
-                    <button id="btnModalCancel" type="button" class="py-2.5 bg-rose-600/90 hover:bg-rose-600 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-xmark"></i> Batal
-                    </button>
-                    <button id="btnModalEdit" type="button" class="py-2.5 bg-amber-600/90 hover:bg-amber-600 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </button>
-                    <button id="btnModalConfirm" type="button" class="py-2.5 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-check"></i> Simpan
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Options Popup Modal (Top Right Ellipsis Menu) -->
-        <div id="optionsMenuModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-start justify-end p-4 hidden">
-            <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-56 p-2 space-y-1 text-xs mt-12">
-                <button id="menuOptToday" class="w-full text-left px-3 py-2 rounded-xl font-medium text-slate-700 hover:bg-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-day text-teal-600"></i> Filter Hari Ini
-                </button>
-                <button id="menuOptAll" class="w-full text-left px-3 py-2 rounded-xl font-medium text-slate-700 hover:bg-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-list-ul text-teal-600"></i> Semua Tanggal
-                </button>
-                <hr class="border-slate-100">
-                <button id="menuOptClose" class="w-full text-left px-3 py-2 rounded-xl font-medium text-rose-600 hover:bg-rose-50 flex items-center gap-2">
-                    <i class="fa-solid fa-xmark"></i> Tutup
-                </button>
-            </div>
-        </div>
-
-        <!-- App Bottom Navigation Bar with Thumb-Centric Voice FAB -->
-        <nav class="fixed bottom-0 left-0 right-0 z-40 max-w-[480px] mx-auto bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2 flex justify-between items-center shadow-lg">
-            
-            <!-- Tab 1 Button -->
-            <button id="navTabList" class="flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 font-bold transition">
-                <i class="fa-solid fa-list-check text-lg"></i>
-                <span class="text-[10px]">Catatan</span>
-            </button>
-
-            <!-- Center Floating Action Button (Voice Input MIC) -->
-            <div class="relative -top-5 flex flex-col items-center">
-                <button id="btnMainVoiceFAB" type="button" class="w-14 h-14 bg-brand-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-brand-600/40 active:scale-90 transition transform border-4 border-slate-200">
-                    <i id="fabMicIcon" class="fa-solid fa-microphone text-xl"></i>
-                </button>
-                <span id="fabStatusLabel" class="text-[9px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-full shadow-xs border border-slate-200 mt-0.5">Tekan Mic</span>
-            </div>
-
-            <!-- Tab 2 Button -->
-            <button id="navTabForm" class="flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium hover:text-slate-600 transition">
-                <i class="fa-solid fa-pen-to-square text-lg"></i>
-                <span class="text-[10px]">Input</span>
-            </button>
-
-            <!-- Tab 3 Button -->
-            <button id="navTabStats" class="flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium hover:text-slate-600 transition">
-                <i class="fa-solid fa-chart-pie text-lg"></i>
-                <span class="text-[10px]">Rekap</span>
-            </button>
-        </nav>
-
+<div class="container">
+    <div class="header">
+        <h1>MARS 1930 BELANJA V.1</h1>
+        <button class="btn-theme" onclick="openThemeModal()">🎨 Warna UI</button>
     </div>
 
-    <script>
-        // --- State Management ---
-        let expenses = JSON.parse(localStorage.getItem('belanjaku_mobile_db')) || [];
-        let recognition = null;
-        let isRecording = false;
-        let activeMicTarget = 'MAIN'; // 'MAIN', 'ITEM', 'QTY', 'PRICE'
-        let silenceTimer = null;
-        let lastVoiceSentence = "";
+    <!-- Voice Control Card -->
+    <div class="card voice-section">
+        <button class="mic-btn" id="micBtn" onclick="toggleVoice()">🎙️</button>
+        <div class="status-text" id="statusText">Tekan mikrofon untuk mulai bicara</div>
+    </div>
 
-        // Review Countdown State
-        let countdownInterval = null;
-        let countdownTimeLeft = 4.0;
-        let pendingParsedData = null;
+    <!-- Input Form Card -->
+    <div class="card">
+        <div id="timerBadge" class="timer-badge">Auto-Simpan dalam <span id="countdown">4</span>s... (Tekan Mic untuk Batalkan)</div>
+        
+        <div class="form-group">
+            <label>Tanggal</label>
+            <input type="date" id="inputTanggal" class="form-control">
+        </div>
 
-        // --- DOM Elements ---
-        const inputFilterDate = document.getElementById('inputFilterDate');
-        const topTodayTotal = document.getElementById('topTodayTotal');
-        const topTodayItems = document.getElementById('topTodayItems');
-        const expenseCardsList = document.getElementById('expenseCardsList');
-        const emptyStateMobile = document.getElementById('emptyStateMobile');
-        const itemCounterBadge = document.getElementById('itemCounterBadge');
-        const dateHeaderTitle = document.getElementById('dateHeaderTitle');
+        <div class="form-group">
+            <label>Nama Barang / Item</label>
+            <input type="text" id="inputItem" class="form-control" placeholder="Contoh: Beras 5kg">
+        </div>
 
-        // Navigation Tabs
-        const viewList = document.getElementById('viewList');
-        const viewForm = document.getElementById('viewForm');
-        const viewStats = document.getElementById('viewStats');
-        const navTabList = document.getElementById('navTabList');
-        const navTabForm = document.getElementById('navTabForm');
-        const navTabStats = document.getElementById('navTabStats');
+        <div class="row">
+            <div class="col form-group">
+                <label>Qty / Jumlah</label>
+                <input type="number" id="inputQty" class="form-control" placeholder="1" oninput="hitungTotalInput()">
+            </div>
+            <div class="col form-group">
+                <label>Harga Satuan (Rp)</label>
+                <input type="number" id="inputHarga" class="form-control" placeholder="15000" oninput="hitungTotalInput()">
+            </div>
+        </div>
 
-        // Main FAB Mic Elements
-        const btnMainVoiceFAB = document.getElementById('btnMainVoiceFAB');
-        const fabMicIcon = document.getElementById('fabMicIcon');
-        const fabStatusLabel = document.getElementById('fabStatusLabel');
+        <div class="form-group">
+            <label>Total Harga (Rp)</label>
+            <input type="number" id="inputTotal" class="form-control" placeholder="0" readonly>
+        </div>
 
-        // Live Voice Bar
-        const voiceLiveBar = document.getElementById('voiceLiveBar');
-        const voiceStatusBadge = document.getElementById('voiceStatusBadge');
-        const liveTranscriptText = document.getElementById('liveTranscriptText');
-        const parsedLiveItem = document.getElementById('parsedLiveItem');
-        const parsedLiveQty = document.getElementById('parsedLiveQty');
-        const parsedLivePrice = document.getElementById('parsedLivePrice');
+        <button class="btn-add" onclick="tambahDataManual()">+ Tambah ke Tabel</button>
+    </div>
 
-        // Form Elements
-        const mobileExpenseForm = document.getElementById('mobileExpenseForm');
-        const formEditId = document.getElementById('formEditId');
-        const formInputDate = document.getElementById('formInputDate');
-        const formInputItem = document.getElementById('formInputItem');
-        const formInputQty = document.getElementById('formInputQty');
-        const formInputPrice = document.getElementById('formInputPrice');
-        const formSubtotalPreview = document.getElementById('formSubtotalPreview');
-        const btnSubmitFormText = document.getElementById('btnSubmitFormText');
-        const btnCancelEdit = document.getElementById('btnCancelEdit');
-        const formHeaderTitle = document.getElementById('formHeaderTitle');
+    <!-- Data Table Card -->
+    <div class="card">
+        <h3>Daftar Belanja</h3>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th class="text-right">Qty</th>
+                        <th class="text-right">Harga</th>
+                        <th class="text-right">Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBody">
+                    <!-- Data belanja masuk di sini -->
+                </tbody>
+            </table>
+        </div>
 
-        // Field Mic Buttons
-        const btnMicItemOnly = document.getElementById('btnMicItemOnly');
-        const btnMicQtyOnly = document.getElementById('btnMicQtyOnly');
-        const btnMicPriceOnly = document.getElementById('btnMicPriceOnly');
+        <div class="total-box">
+            <span>TOTAL BELANJA:</span>
+            <span id="grandTotal">Rp 0</span>
+        </div>
 
-        // Modal Countdown Elements
-        const reviewModalOverlay = document.getElementById('reviewModalOverlay');
-        const reviewTimerText = document.getElementById('reviewTimerText');
-        const reviewProgressBar = document.getElementById('reviewProgressBar');
-        const reviewParsedItem = document.getElementById('reviewParsedItem');
-        const reviewParsedQty = document.getElementById('reviewParsedQty');
-        const reviewParsedPrice = document.getElementById('reviewParsedPrice');
-        const reviewParsedTotal = document.getElementById('reviewParsedTotal');
-        const btnModalCancel = document.getElementById('btnModalCancel');
-        const btnModalEdit = document.getElementById('btnModalEdit');
-        const btnModalConfirm = document.getElementById('btnModalConfirm');
+        <div class="action-btns">
+            <button class="btn-action" onclick="eksporCSV()">📥 Ekspor CSV</button>
+            <button class="btn-action btn-danger" onclick="hapusSemua()">🗑️ Hapus Semua</button>
+        </div>
+    </div>
+</div>
 
-        // Summary Stats Elements
-        const statGrandTotalAll = document.getElementById('statGrandTotalAll');
-        const statTodayTotalAll = document.getElementById('statTodayTotalAll');
-        const statTotalRowsAll = document.getElementById('statTotalRowsAll');
-        const btnExportCSV = document.getElementById('btnExportCSV');
-        const btnDownloadHTML = document.getElementById('btnDownloadHTML');
-        const btnClearAll = document.getElementById('btnClearAll');
+<!-- Modal Selector Tema -->
+<div class="modal" id="themeModal">
+    <div class="modal-content">
+        <h3 style="margin-bottom:12px; font-size:16px;">Pilih Warna UI</h3>
+        
+        <div class="theme-option" onclick="setTheme('red')">
+            <div class="theme-color-dot" style="background:#dc2626;"></div>
+            <span>Merah (Default)</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('blue')">
+            <div class="theme-color-dot" style="background:#2563eb;"></div>
+            <span>Biru Ocean</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('green')">
+            <div class="theme-color-dot" style="background:#16a34a;"></div>
+            <span>Hijau Emerald</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('purple')">
+            <div class="theme-color-dot" style="background:#9333ea;"></div>
+            <span>Ungu Royal</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('dark')">
+            <div class="theme-color-dot" style="background:#475569;"></div>
+            <span>Dark / Onyx</span>
+        </div>
 
-        // Menu Modal
-        const btnOpenMenu = document.getElementById('btnOpenMenu');
-        const optionsMenuModal = document.getElementById('optionsMenuModal');
-        const menuOptToday = document.getElementById('menuOptToday');
-        const menuOptAll = document.getElementById('menuOptAll');
-        const menuOptClose = document.getElementById('menuOptClose');
+        <button class="btn-add" style="margin-top:10px; background:#64748b;" onclick="closeThemeModal()">Tutup</button>
+    </div>
+</div>
 
-        /**
-         * ROBUST INDONESIAN NUMBER & PRICE PARSER ENGINE
-         * Solves spoken inputs like "180.000", "180 ribu", "180rb", "seratus delapan puluh ribu"
-         */
-        function parseIndonesianSpokenNumbers(str) {
-            if (!str) return null;
-            let text = str.toLowerCase().trim();
+<script>
+    let belanjaData = JSON.parse(localStorage.getItem('mars1930_belanja')) || [];
+    let isRecording = false;
+    let recognition = null;
+    let autoSaveTimer = null;
+    let countdownVal = 4;
 
-            // 1. Remove currency symbols
-            text = text.replace(/rp\.?/g, '').trim();
+    // Inisialisasi Tanggal Hari Ini
+    document.getElementById('inputTanggal').valueAsDate = new Date();
 
-            // 2. Check for formatted thousands digits like "180.000" or "25.000"
-            const formattedThousandsMatch = text.match(/\b\d{1,3}(?:[\.,]\d{3})+\b/);
-            if (formattedThousandsMatch) {
-                const cleanedNum = parseFloat(formattedThousandsMatch[0].replace(/[\.,]/g, ''));
-                if (!isNaN(cleanedNum) && cleanedNum > 0) {
-                    return cleanedNum;
-                }
-            }
+    // Load Theme
+    const savedTheme = localStorage.getItem('mars1930_theme') || 'red';
+    setTheme(savedTheme, false);
 
-            // Fractions
-            if (text.includes('setengah') && !text.includes('ribu') && !text.includes('ratus')) return 0.5;
+    function openThemeModal() { document.getElementById('themeModal').style.display = 'flex'; }
+    function closeThemeModal() { document.getElementById('themeModal').style.display = 'none'; }
+    
+    function setTheme(themeName, save = true) {
+        document.documentElement.setAttribute('data-theme', themeName);
+        if(save) localStorage.setItem('mars1930_theme', themeName);
+        closeThemeModal();
+    }
 
-            // 3. Digit followed by multiplier (e.g. "180 ribu", "180rb", "180k", "1.5 juta")
-            const digitMultiplierRegex = /(\d+(?:[\.,]\d+)?)\s*(ribu|rb|k|juta|jt|ratus|puluh)?/gi;
-            let match;
-            let foundDigitsWithUnit = false;
-            let highestVal = 0;
+    function renderTabel() {
+        const tbody = document.getElementById('tabelBody');
+        tbody.innerHTML = '';
+        let total = 0;
 
-            while ((match = digitMultiplierRegex.exec(text)) !== null) {
-                let numVal = parseFloat(match[1].replace(',', '.'));
-                let unit = match[2] ? match[2].toLowerCase() : '';
+        belanjaData.forEach((item, index) => {
+            let rowTotal = item.qty * item.harga;
+            total += rowTotal;
+            tbody.innerHTML += `
+                <tr>
+                    <td><b>${item.item}</b><br><small style="color:#64748b">${item.tanggal}</small></td>
+                    <td class="text-right">${item.qty}</td>
+                    <td class="text-right">${item.harga.toLocaleString('id-ID')}</td>
+                    <td class="text-right"><b>${rowTotal.toLocaleString('id-ID')}</b></td>
+                    <td class="text-right"><button style="color:red; border:none; background:none; cursor:pointer;" onclick="hapusItem(${index})">✕</button></td>
+                </tr>
+            `;
+        });
 
-                if (unit === 'ribu' || unit === 'rb' || unit === 'k') {
-                    numVal *= 1000;
-                    foundDigitsWithUnit = true;
-                } else if (unit === 'juta' || unit === 'jt') {
-                    numVal *= 1000000;
-                    foundDigitsWithUnit = true;
-                } else if (unit === 'ratus') {
-                    numVal *= 100;
-                    foundDigitsWithUnit = true;
-                } else if (unit === 'puluh') {
-                    numVal *= 10;
-                    foundDigitsWithUnit = true;
-                }
+        document.getElementById('grandTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
+        localStorage.setItem('mars1930_belanja', JSON.stringify(belanjaData));
+    }
 
-                if (numVal > highestVal) highestVal = numVal;
-            }
+    function hitungTotalInput() {
+        let q = parseFloat(document.getElementById('inputQty').value) || 0;
+        let h = parseFloat(document.getElementById('inputHarga').value) || 0;
+        document.getElementById('inputTotal').value = q * h;
+    }
 
-            if (foundDigitsWithUnit && highestVal > 0) {
-                return Math.round(highestVal);
-            }
+    function tambahDataManual() {
+        let tgl = document.getElementById('inputTanggal').value;
+        let item = document.getElementById('inputItem').value.trim();
+        let qty = parseFloat(document.getElementById('inputQty').value) || 1;
+        let harga = parseFloat(document.getElementById('inputHarga').value) || 0;
 
-            // 4. Complete Indonesian Words Parser
-            const wordsMap = {
-                'nol': 0, 'se': 1, 'satu': 1, 'dua': 2, 'tiga': 3, 'empat': 4, 'lima': 5,
-                'enam': 6, 'tujuh': 7, 'delapan': 8, 'sembilan': 9, 'sepuluh': 10,
-                'sebelas': 11, 'dua belas': 12, 'tiga belas': 13, 'empat belas': 14,
-                'lima belas': 15, 'enam belas': 16, 'tujuh belas': 17, 'delapan belas': 18,
-                'sembilan belas': 19, 'dua puluh': 20, 'tiga puluh': 30, 'empat puluh': 40,
-                'lima puluh': 50, 'enam puluh': 60, 'tujuh puluh': 70, 'delapan puluh': 80,
-                'sembilan puluh': 90, 'seratus': 100, 'seribu': 1000, 'sejuta': 1000000
-            };
-
-            if (wordsMap[text] !== undefined) return wordsMap[text];
-
-            const tokens = text.split(/\s+/);
-            let totalSum = 0;
-            let currentChunk = 0;
-
-            for (let i = 0; i < tokens.length; i++) {
-                const token = tokens[i];
-
-                if (token === 'setengah') {
-                    currentChunk += 0.5;
-                } else if (token === 'se' || token === 'satu') {
-                    currentChunk += 1;
-                } else if (wordsMap[token] !== undefined) {
-                    currentChunk += wordsMap[token];
-                } else if (token === 'belas') {
-                    currentChunk = (currentChunk === 0 ? 1 : currentChunk) + 10;
-                } else if (token === 'puluh') {
-                    currentChunk = (currentChunk === 0 ? 1 : currentChunk) * 10;
-                } else if (token === 'ratus') {
-                    currentChunk = (currentChunk === 0 ? 1 : currentChunk) * 100;
-                } else if (token === 'ribu' || token === 'rb' || token === 'k') {
-                    totalSum += (currentChunk === 0 ? 1 : currentChunk) * 1000;
-                    currentChunk = 0;
-                } else if (token === 'juta' || token === 'jt') {
-                    totalSum += (currentChunk === 0 ? 1 : currentChunk) * 1000000;
-                    currentChunk = 0;
-                } else {
-                    const parsedNum = parseFloat(token.replace(/[\.,]/g, ''));
-                    if (!isNaN(parsedNum)) {
-                        currentChunk += parsedNum;
-                    }
-                }
-            }
-
-            totalSum += currentChunk;
-
-            if (/\b(ribu|rb|k)\b/i.test(text) && totalSum < 1000 && totalSum > 0) {
-                totalSum *= 1000;
-            }
-
-            return totalSum > 0 ? Math.round(totalSum) : null;
+        if(!item || harga <= 0) {
+            alert('Mohon isi nama barang dan harga dengan benar!');
+            return;
         }
 
-        /**
-         * Full Voice Sentence Extractor
-         */
-        function parseFullVoiceSentence(rawText) {
-            if (!rawText) return { item: '', qty: null, price: null, isValid: false };
-            let text = rawText.toLowerCase().trim();
+        belanjaData.push({ tanggal: tgl, item: item, qty: qty, harga: harga });
+        renderTabel();
 
-            text = text.replace(/^(tolong|catat|masukkan|tambah|beli|pembelian)\s+/, '');
+        // Reset Input Form
+        document.getElementById('inputItem').value = '';
+        document.getElementById('inputQty').value = '';
+        document.getElementById('inputHarga').value = '';
+        document.getElementById('inputTotal').value = '';
+        
+        cancelAutoSave();
+    }
 
-            let item = '';
-            let qty = null;
-            let price = null;
+    function hapusItem(index) {
+        belanjaData.splice(index, 1);
+        renderTabel();
+    }
 
-            // Price Extraction
-            const priceKeywordMatch = text.match(/(?:harga|seharga|rp|biaya)\s*(.+)/i);
-            if (priceKeywordMatch) {
-                price = parseIndonesianSpokenNumbers(priceKeywordMatch[1]);
-            } else {
-                const pricePhraseMatch = text.match(/(\d+(?:[\.,]\d+)?\s*(?:ribu|rb|k|juta|jt|000)|(?:seratus|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|puluh|belas)\s+(?:delapan\s+puluh\s+|puluh\s+)?ribu)/gi);
-                if (pricePhraseMatch && pricePhraseMatch.length > 0) {
-                    price = parseIndonesianSpokenNumbers(pricePhraseMatch[pricePhraseMatch.length - 1]);
-                }
-            }
-
-            // Qty Extraction
-            const qtyKeywordMatch = text.match(/(?:qty|jumlah|sebanyak|banyaknya)\s*([a-z0-9\/\.\s]+)/i);
-            if (qtyKeywordMatch) {
-                qty = parseIndonesianSpokenNumbers(qtyKeywordMatch[1]);
-            } else {
-                const unitMatch = text.match(/(\d+[\d\/\.,]*|\b(?:setengah|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh)\b)\s*(?:kilo|kg|gram|gr|liter|ltr|pcs|biji|buah|pack|bungkus|botol|ikat|porsi)/i);
-                if (unitMatch) {
-                    qty = parseIndonesianSpokenNumbers(unitMatch[1]);
-                }
-            }
-
-            if (!qty && price) qty = 1;
-
-            // Item Name Extraction
-            item = text
-                .replace(/(?:harga|seharga|rp|biaya)\s*.+/gi, '')
-                .replace(/(?:qty|jumlah|sebanyak)\s*([a-z0-9\/\.\s]+)/gi, '')
-                .replace(/(\d+[\d\/\.,]*|\b(?:setengah|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh)\b)\s*(?:kilo|kg|gram|gr|liter|ltr|pcs|biji|buah|pack|bungkus|botol|ikat|porsi)/gi, '')
-                .replace(/(\d+(?:[\.,]\d+)?\s*(?:ribu|rb|k|juta|jt|000)|(?:seratus|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|puluh|belas)\s+(?:delapan\s+puluh\s+|puluh\s+)?ribu)/gi, '')
-                .replace(/\b(harga|seharga|rp|biaya|qty|jumlah|rupiah|ribu|rb|k)\b/gi, '')
-                .replace(/\s+/g, ' ')
-                .trim();
-
-            if (item) {
-                item = item.charAt(0).toUpperCase() + item.slice(1);
-            }
-
-            const isValid = Boolean(item && item.length > 1 && qty && qty > 0 && price && price > 0);
-
-            return { item, qty, price, isValid };
+    function hapusSemua() {
+        if(confirm('Hapus seluruh data belanjaan?')) {
+            belanjaData = [];
+            renderTabel();
         }
+    }
 
-        /**
-         * Speech Recognition Setup
-         */
-        function initSpeechRecognition() {
+    function eksporCSV() {
+        if(belanjaData.length === 0) return alert('Data kosong!');
+        let csv = 'Tanggal,Item,Qty,Harga,Total\n';
+        belanjaData.forEach(d => {
+            csv += `${d.tanggal},"${d.item}",${d.qty},${d.harga},${d.qty * d.harga}\n`;
+        });
+        let blob = new Blob([csv], { type: 'text/csv' });
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `Belanja_MARS1930_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+    }
+
+    // --- SPOKEN NUMBER & SPEECH ENGINE ---
+    function parseSpokenPrice(text) {
+        text = text.toLowerCase().replace(/rp|rupiah/g, '').trim();
+        
+        // Konversi kata angka bahasa Indonesia ke angka
+        let wordMap = {
+            'nol':0, 'satu':1, 'dua':2, 'tiga':3, 'empat':4, 'lima':5,
+            'enam':6, 'tujuh':7, 'delapan':8, 'sembilan':9, 'sepuluh':10,
+            'sebelas':11, 'seratus':100, 'seribu':1000
+        };
+
+        // Deteksi bentuk singkatan "rb" atau "ribu"
+        if(text.includes('rb') || text.includes('ribu')) {
+            let clean = text.replace('ribu', '').replace('rb', '').trim();
+            let val = parseFloat(clean) || wordMap[clean] || 0;
+            return val * 1000;
+        }
+        if(text.includes('juta') || text.includes('jt')) {
+            let clean = text.replace('juta', '').replace('jt', '').trim();
+            let val = parseFloat(clean) || wordMap[clean] || 0;
+            return val * 1000000;
+        }
+        
+        return parseFloat(text.replace(/[^0-9]/g, '')) || 0;
+    }
+
+    function toggleVoice() {
+        if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-            if (SpeechRecognition) {
+            
+            if(!recognition) {
                 recognition = new SpeechRecognition();
                 recognition.lang = 'id-ID';
-                recognition.continuous = true;
-                recognition.interimResults = true;
+                recognition.continuous = false;
+                recognition.interimResults = false;
 
-                recognition.onstart = () => {
-                    stopCountdown();
+                recognition.onstart = function() {
                     isRecording = true;
-                    updateMicUI(true);
-                    voiceStatusBadge.textContent = "Mendengarkan...";
-                    voiceStatusBadge.className = "bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full font-mono text-[10px] animate-pulse";
-                    lastVoiceSentence = "";
-                    resetSilenceTimer();
+                    document.getElementById('micBtn').classList.add('recording');
+                    document.getElementById('statusText').innerText = 'Mendengarkan... (Sebutkan: Barang, Jumlah, Harga)';
+                    cancelAutoSave();
                 };
 
-                recognition.onresult = (event) => {
-                    resetSilenceTimer();
-                    let transcript = '';
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        transcript += event.results[i][0].transcript;
-                    }
-
-                    if (!transcript.trim()) return;
-                    lastVoiceSentence = transcript;
-                    liveTranscriptText.textContent = `"${transcript}"`;
-
-                    if (activeMicTarget === 'MAIN') {
-                        const parsed = parseFullVoiceSentence(transcript);
-                        parsedLiveItem.textContent = parsed.item || '-';
-                        parsedLiveQty.textContent = parsed.qty || '-';
-                        parsedLivePrice.textContent = parsed.price ? formatRupiah(parsed.price) : '-';
-                    } else if (activeMicTarget === 'ITEM') {
-                        formInputItem.value = transcript.trim();
-                        parsedLiveItem.textContent = transcript.trim();
-                    } else if (activeMicTarget === 'QTY') {
-                        const qVal = parseIndonesianSpokenNumbers(transcript);
-                        if (qVal) formInputQty.value = qVal;
-                        parsedLiveQty.textContent = qVal || transcript;
-                        updateFormSubtotal();
-                    } else if (activeMicTarget === 'PRICE') {
-                        const pVal = parseIndonesianSpokenNumbers(transcript);
-                        if (pVal) formInputPrice.value = pVal;
-                        parsedLivePrice.textContent = pVal ? formatRupiah(pVal) : transcript;
-                        updateFormSubtotal();
-                    }
+                recognition.onresult = function(event) {
+                    let transcript = event.results[0][0].transcript;
+                    document.getElementById('statusText').innerText = `Terdengar: "${transcript}"`;
+                    parseVoiceInput(transcript);
                 };
 
-                recognition.onend = () => {
-                    clearTimeout(silenceTimer);
-                    isRecording = false;
-                    updateMicUI(false);
-                    voiceStatusBadge.textContent = "Ready";
-                    voiceStatusBadge.className = "bg-teal-500/20 text-teal-300 px-2 py-0.5 rounded-full font-mono text-[10px]";
-
-                    if (activeMicTarget === 'MAIN' && lastVoiceSentence) {
-                        const parsed = parseFullVoiceSentence(lastVoiceSentence);
-                        handleVoiceParsedData(parsed);
-                    }
+                recognition.onerror = function() {
+                    document.getElementById('statusText').innerText = 'Gagal mengenali suara. Coba lagi.';
+                    stopVoice();
                 };
 
-                recognition.onerror = (e) => {
-                    console.error("Speech Error:", e.error);
-                    clearTimeout(silenceTimer);
-                    isRecording = false;
-                    updateMicUI(false);
-                    if (e.error !== 'no-speech') {
-                        showToast("Voice error: " + e.error, "error");
-                    }
+                recognition.onend = function() {
+                    stopVoice();
                 };
-            } else {
-                fabStatusLabel.textContent = "Not Supported";
-                showToast("Browser tidak mendukung Web Speech API", "warning");
             }
-        }
 
-        function resetSilenceTimer() {
-            clearTimeout(silenceTimer);
-            silenceTimer = setTimeout(() => {
-                if (isRecording && recognition) {
-                    recognition.stop();
-                }
-            }, 3500); // 3.5s silence trigger
-        }
-
-        function handleVoiceParsedData(parsed) {
-            if (parsed.isValid) {
-                startCountdownModal(parsed);
-            } else {
-                if (parsed.item) formInputItem.value = parsed.item;
-                if (parsed.qty) formInputQty.value = parsed.qty;
-                if (parsed.price) formInputPrice.value = parsed.price;
-                updateFormSubtotal();
-
-                switchTab('FORM');
-                showToast("⚠️ Data belum lengkap. Dialihkan ke form untuk diperiksa.", "warning");
-            }
-        }
-
-        /**
-         * Countdown Modal Logic
-         */
-        function startCountdownModal(parsed) {
-            stopCountdown();
-            pendingParsedData = parsed;
-            countdownTimeLeft = 4.0;
-
-            reviewParsedItem.textContent = `Item: ${parsed.item}`;
-            reviewParsedQty.textContent = `Qty: ${parsed.qty}`;
-            reviewParsedPrice.textContent = `Harga: ${formatRupiah(parsed.price)}`;
-            reviewParsedTotal.textContent = formatRupiah(parsed.qty * parsed.price);
-
-            reviewTimerText.textContent = `${countdownTimeLeft.toFixed(1)}s`;
-            reviewProgressBar.style.width = '100%';
-            reviewModalOverlay.classList.remove('hidden');
-
-            const totalDuration = 4000;
-            const intervalStep = 100;
-            let elapsed = 0;
-
-            countdownInterval = setInterval(() => {
-                elapsed += intervalStep;
-                countdownTimeLeft = Math.max(0, (totalDuration - elapsed) / 1000);
-                
-                reviewTimerText.textContent = `${countdownTimeLeft.toFixed(1)}s`;
-                const percent = (countdownTimeLeft / 4.0) * 100;
-                reviewProgressBar.style.width = `${percent}%`;
-
-                if (elapsed >= totalDuration) {
-                    stopCountdown();
-                    commitPendingParsedData();
-                }
-            }, intervalStep);
-        }
-
-        function stopCountdown() {
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                countdownInterval = null;
-            }
-            reviewModalOverlay.classList.add('hidden');
-        }
-
-        function commitPendingParsedData() {
-            if (!pendingParsedData || !pendingParsedData.isValid) return;
-
-            const newItem = {
-                id: Date.now().toString(),
-                date: inputFilterDate.value || getTodayDateString(),
-                item: pendingParsedData.item,
-                qty: pendingParsedData.qty,
-                price: pendingParsedData.price
-            };
-
-            expenses.push(newItem);
-            saveData();
-            showToast(`[Suara] Tersimpan: ${pendingParsedData.item}`, "success");
-            pendingParsedData = null;
-        }
-
-        // Modal Button Handlers
-        btnModalCancel.addEventListener('click', () => {
-            stopCountdown();
-            pendingParsedData = null;
-            showToast("Input suara dibatalkan.", "info");
-        });
-
-        btnModalEdit.addEventListener('click', () => {
-            if (pendingParsedData) {
-                formInputItem.value = pendingParsedData.item || '';
-                formInputQty.value = pendingParsedData.qty || '';
-                formInputPrice.value = pendingParsedData.price || '';
-                updateFormSubtotal();
-                stopCountdown();
-                pendingParsedData = null;
-                switchTab('FORM');
-                showToast("Silakan edit di form ini.", "info");
-            }
-        });
-
-        btnModalConfirm.addEventListener('click', () => {
-            stopCountdown();
-            commitPendingParsedData();
-        });
-
-        function updateMicUI(active) {
-            if (active) {
-                btnMainVoiceFAB.classList.add('mic-recording');
-                fabMicIcon.className = "fa-solid fa-microphone-slash text-xl";
-                fabStatusLabel.textContent = "Selesai";
-                fabStatusLabel.className = "text-[9px] font-bold text-white bg-rose-600 px-2 py-0.5 rounded-full shadow-xs border border-rose-500 mt-0.5 animate-pulse";
-            } else {
-                btnMainVoiceFAB.classList.remove('mic-recording');
-                fabMicIcon.className = "fa-solid fa-microphone text-xl";
-                fabStatusLabel.textContent = "Tekan Mic";
-                fabStatusLabel.className = "text-[9px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-full shadow-xs border border-slate-200 mt-0.5";
-            }
-        }
-
-        function toggleVoiceRecording(target = 'MAIN') {
-            if (!recognition) return;
-            activeMicTarget = target;
-            if (isRecording) {
+            if(isRecording) {
                 recognition.stop();
             } else {
-                try {
-                    recognition.start();
-                } catch (e) {
-                    console.error("Mic start error:", e);
-                }
+                recognition.start();
             }
+        } else {
+            alert('Browser Anda tidak mendukung Web Speech API.');
+        }
+    }
+
+    function stopVoice() {
+        isRecording = false;
+        document.getElementById('micBtn').classList.remove('recording');
+    }
+
+    function parseVoiceInput(text) {
+        // Contoh format ucapan: "Beras 5kg jumlah 2 harga 25 ribu" atau "Minyak goreng harga 180 ribu"
+        let parts = text.split('harga');
+        let itemPart = parts[0] || '';
+        let hargaPart = parts[1] || '';
+
+        let qty = 1;
+        let qtyMatch = itemPart.match(/(?:jumlah|qty|banyaknya)\s*(\d+)/i);
+        if(qtyMatch) {
+            qty = parseInt(qtyMatch[1]);
+            itemPart = itemPart.replace(qtyMatch[0], '');
         }
 
-        // Helper Functions
-        function getTodayDateString() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
+        let itemNama = itemPart.trim();
+        let hargaVal = parseSpokenPrice(hargaPart || text);
 
-        function formatRupiah(num) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                maximumFractionDigits: 0
-            }).format(num);
-        }
+        if(itemNama) document.getElementById('inputItem').value = itemNama;
+        document.getElementById('inputQty').value = qty;
+        if(hargaVal > 0) document.getElementById('inputHarga').value = hargaVal;
 
-        function showToast(message, type = "success") {
-            const toastInner = document.getElementById('toastInner');
-            const toastIcon = document.getElementById('toastIcon');
-            const toastMessage = document.getElementById('toastMessage');
-            const mobileToast = document.getElementById('mobileToast');
+        hitungTotalInput();
+        startAutoSave();
+    }
 
-            if (type === "success") {
-                toastInner.className = "bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-500/40 toast-pop";
-                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-base";
-            } else if (type === "warning") {
-                toastInner.className = "bg-amber-950 text-amber-100 text-xs font-medium px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-500/40 toast-pop";
-                toastIcon.className = "fa-solid fa-triangle-exclamation text-amber-400 text-base";
-            } else if (type === "error") {
-                toastInner.className = "bg-rose-950 text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-rose-500/40 toast-pop";
-                toastIcon.className = "fa-solid fa-circle-xmark text-rose-400 text-base";
-            } else if (type === "info") {
-                toastInner.className = "bg-teal-950 text-teal-100 text-xs font-medium px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-teal-500/40 toast-pop";
-                toastIcon.className = "fa-solid fa-circle-info text-teal-300 text-base";
+    function startAutoSave() {
+        cancelAutoSave();
+        countdownVal = 4;
+        let badge = document.getElementById('timerBadge');
+        let cdElem = document.getElementById('countdown');
+        badge.style.display = 'block';
+        cdElem.innerText = countdownVal;
+
+        autoSaveTimer = setInterval(() => {
+            countdownVal--;
+            cdElem.innerText = countdownVal;
+            if(countdownVal <= 0) {
+                cancelAutoSave();
+                tambahDataManual();
             }
+        }, 1000);
+    }
 
-            toastMessage.textContent = message;
-            mobileToast.classList.remove('hidden');
-
-            setTimeout(() => {
-                mobileToast.classList.add('hidden');
-            }, 3200);
+    function cancelAutoSave() {
+        if(autoSaveTimer) {
+            clearInterval(autoSaveTimer);
+            autoSaveTimer = null;
         }
+        document.getElementById('timerBadge').style.display = 'none';
+    }
 
-        function updateFormSubtotal() {
-            const q = parseFloat(formInputQty.value) || 0;
-            const p = parseFloat(formInputPrice.value) || 0;
-            formSubtotalPreview.textContent = formatRupiah(q * p);
-        }
+    // Render Data Awal
+    renderTabel();
+</script>
 
-        function saveData() {
-            localStorage.setItem('belanjaku_mobile_db', JSON.stringify(expenses));
-            renderList();
-        }
-
-        function renderList() {
-            expenseCardsList.innerHTML = '';
-            const filterDate = inputFilterDate.value;
-            const todayStr = getTodayDateString();
-
-            dateHeaderTitle.textContent = (filterDate === todayStr) ? "(Hari Ini)" : `(${filterDate})`;
-
-            let filtered = expenses.filter(i => i.date === filterDate);
-            filtered.sort((a, b) => b.id - a.id);
-
-            itemCounterBadge.textContent = `${filtered.length} Item`;
-
-            if (filtered.length === 0) {
-                emptyStateMobile.classList.remove('hidden');
-            } else {
-                emptyStateMobile.classList.add('hidden');
-
-                filtered.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = "bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs flex items-center justify-between gap-3 active:bg-slate-50 transition";
-                    const subtotal = item.qty * item.price;
-
-                    card.innerHTML = `
-                        <div class="flex-1 min-w-0">
-                            <h3 class="text-xs font-bold text-slate-800 truncate">${escapeHtml(item.item)}</h3>
-                            <div class="flex items-center gap-2 text-[11px] text-slate-500 mt-1">
-                                <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">Qty: ${item.qty}</span>
-                                <span>@ ${formatRupiah(item.price)}</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs font-black text-brand-700">${formatRupiah(subtotal)}</p>
-                            <div class="flex items-center justify-end gap-1 mt-1">
-                                <button onclick="editMobileItem('${item.id}')" class="text-slate-400 hover:text-teal-600 p-1 active:scale-90 transition">
-                                    <i class="fa-solid fa-pen text-xs"></i>
-                                </button>
-                                <button onclick="deleteMobileItem('${item.id}')" class="text-slate-400 hover:text-rose-600 p-1 active:scale-90 transition">
-                                    <i class="fa-regular fa-trash-can text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    expenseCardsList.appendChild(card);
-                });
-            }
-
-            calculateTotals();
-        }
-
-        function calculateTotals() {
-            const todayStr = getTodayDateString();
-            const filterDate = inputFilterDate.value;
-
-            const grandTotal = expenses.reduce((s, i) => s + (i.qty * i.price), 0);
-            
-            const todayItems = expenses.filter(i => i.date === todayStr);
-            const todayTotal = todayItems.reduce((s, i) => s + (i.qty * i.price), 0);
-
-            topTodayTotal.textContent = formatRupiah(todayTotal);
-            topTodayItems.textContent = `${todayItems.length} Item`;
-
-            statGrandTotalAll.textContent = formatRupiah(grandTotal);
-            statTodayTotalAll.textContent = formatRupiah(todayTotal);
-            statTotalRowsAll.textContent = `${expenses.length} Data`;
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
-        }
-
-        // Global Edit/Delete Functions
-        window.deleteMobileItem = function(id) {
-            expenses = expenses.filter(i => i.id !== id);
-            saveData();
-            showToast("Item berhasil dihapus.", "info");
-        };
-
-        window.editMobileItem = function(id) {
-            const target = expenses.find(i => i.id === id);
-            if (!target) return;
-
-            formEditId.value = target.id;
-            formInputDate.value = target.date;
-            formInputItem.value = target.item;
-            formInputQty.value = target.qty;
-            formInputPrice.value = target.price;
-            updateFormSubtotal();
-
-            formHeaderTitle.textContent = "Edit Data Belanja";
-            btnSubmitFormText.textContent = "Update Belanjaan";
-            btnCancelEdit.classList.remove('hidden');
-
-            switchTab('FORM');
-        };
-
-        function resetMobileForm() {
-            formEditId.value = "";
-            formInputDate.value = getTodayDateString();
-            formInputItem.value = "";
-            formInputQty.value = "";
-            formInputPrice.value = "";
-            updateFormSubtotal();
-
-            formHeaderTitle.textContent = "Input Manual Belanja";
-            btnSubmitFormText.textContent = "Simpan Belanjaan";
-            btnCancelEdit.classList.add('hidden');
-        }
-
-        // Tab Switcher
-        function switchTab(tabName) {
-            viewList.classList.add('hidden');
-            viewForm.classList.add('hidden');
-            viewStats.classList.add('hidden');
-
-            navTabList.className = "flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium transition";
-            navTabForm.className = "flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium transition";
-            navTabStats.className = "flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium transition";
-
-            if (tabName === 'LIST') {
-                viewList.classList.remove('hidden');
-                navTabList.className = "flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 font-bold transition";
-            } else if (tabName === 'FORM') {
-                viewForm.classList.remove('hidden');
-                navTabForm.className = "flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 font-bold transition";
-            } else if (tabName === 'STATS') {
-                viewStats.classList.remove('hidden');
-                navTabStats.className = "flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 font-bold transition";
-            }
-        }
-
-        // Event Listeners Initialization
-        navTabList.addEventListener('click', () => switchTab('LIST'));
-        navTabForm.addEventListener('click', () => switchTab('FORM'));
-        navTabStats.addEventListener('click', () => switchTab('STATS'));
-
-        btnMainVoiceFAB.addEventListener('click', () => toggleVoiceRecording('MAIN'));
-        btnMicItemOnly.addEventListener('click', () => toggleVoiceRecording('ITEM'));
-        btnMicQtyOnly.addEventListener('click', () => toggleVoiceRecording('QTY'));
-        btnMicPriceOnly.addEventListener('click', () => toggleVoiceRecording('PRICE'));
-
-        formInputQty.addEventListener('input', updateFormSubtotal);
-        formInputPrice.addEventListener('input', updateFormSubtotal);
-        btnCancelEdit.addEventListener('click', resetMobileForm);
-
-        inputFilterDate.addEventListener('change', renderList);
-
-        // Form Submit
-        mobileExpenseForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const itemVal = formInputItem.value.trim();
-            const qtyVal = parseFloat(formInputQty.value) || 0;
-            const priceVal = parseFloat(formInputPrice.value) || 0;
-
-            if (!itemVal || qtyVal <= 0 || priceVal <= 0) {
-                showToast("Lengkapi Nama Item, Qty, dan Harga!", "warning");
-                return;
-            }
-
-            if (formEditId.value) {
-                const idx = expenses.findIndex(i => i.id === formEditId.value);
-                if (idx !== -1) {
-                    expenses[idx] = {
-                        id: formEditId.value,
-                        date: formInputDate.value,
-                        item: itemVal,
-                        qty: qtyVal,
-                        price: priceVal
-                    };
-                    showToast("Data belanjaan diperbarui!", "success");
-                }
-            } else {
-                const newItem = {
-                    id: Date.now().toString(),
-                    date: formInputDate.value || getTodayDateString(),
-                    item: itemVal,
-                    qty: qtyVal,
-                    price: priceVal
-                };
-                expenses.push(newItem);
-                showToast("Berhasil ditambahkan!", "success");
-            }
-
-            saveData();
-            resetMobileForm();
-            switchTab('LIST');
-        });
-
-        // Top Ellipsis Menu Modal
-        btnOpenMenu.addEventListener('click', () => optionsMenuModal.classList.remove('hidden'));
-        menuOptClose.addEventListener('click', () => optionsMenuModal.classList.add('hidden'));
-
-        menuOptToday.addEventListener('click', () => {
-            inputFilterDate.value = getTodayDateString();
-            renderList();
-            optionsMenuModal.classList.add('hidden');
-        });
-
-        menuOptAll.addEventListener('click', () => {
-            inputFilterDate.value = getTodayDateString();
-            renderList();
-            optionsMenuModal.classList.add('hidden');
-        });
-
-        // Export Actions
-        btnExportCSV.addEventListener('click', () => {
-            if (expenses.length === 0) {
-                showToast("Tidak ada data untuk diekspor!", "warning");
-                return;
-            }
-            let csv = "data:text/csv;charset=utf-8,No,Tanggal,Nama Item,Qty,Harga Satuan,Total\n";
-            expenses.forEach((r, i) => {
-                csv += `${i+1},${r.date},"${r.item.replace(/"/g, '""')}",${r.qty},${r.price},${r.qty * r.price}\n`;
-            });
-            const link = document.createElement("a");
-            link.href = encodeURI(csv);
-            link.download = `Catatan_Belanja_${getTodayDateString()}.csv`;
-            link.click();
-            showToast("File CSV diunduh!", "success");
-        });
-
-        btnDownloadHTML.addEventListener('click', () => {
-            const blob = new Blob(["<!DOCTYPE html>\n" + document.documentElement.outerHTML], { type: 'text/html' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'catatan_belanja_mobile.html';
-            a.click();
-            showToast("File HTML disimpan!", "success");
-        });
-
-        btnClearAll.addEventListener('click', () => {
-            if (expenses.length === 0) return;
-            if (confirm("Hapus seluruh data belanja?")) {
-                expenses = [];
-                saveData();
-                showToast("Seluruh catatan dibersihkan.", "info");
-            }
-        });
-
-        // Init App
-        window.onload = function() {
-            inputFilterDate.value = getTodayDateString();
-            formInputDate.value = getTodayDateString();
-            renderList();
-            initSpeechRecognition();
-        };
-    </script>
 </body>
 </html>
