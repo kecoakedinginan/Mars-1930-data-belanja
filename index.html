@@ -3,164 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MARS 1930 - DATA BELANJA V.1</title>
+    <title>MARS 1930 BELANJA</title>
     <style>
         :root {
-            --primary: #dc2626;
-            --primary-hover: #b91c1c;
+            --primary-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+            --primary-color: #dc2626;
             --primary-light: #fef2f2;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
+            --primary-shadow: rgba(220, 38, 38, 0.25);
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --border-color: #e2e8f0;
         }
 
-        /* Theme Presets */
+        /* Dynamic Theme Variables */
         [data-theme="red"] {
-            --primary: #dc2626;
-            --primary-hover: #b91c1c;
+            --primary-gradient: linear-gradient(135deg, #f87171 0%, #dc2626 50%, #991b1b 100%);
+            --primary-color: #dc2626;
             --primary-light: #fef2f2;
+            --primary-shadow: rgba(220, 38, 38, 0.3);
         }
         [data-theme="blue"] {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --primary-gradient: linear-gradient(135deg, #38bdf8 0%, #2563eb 50%, #1e40af 100%);
+            --primary-color: #2563eb;
             --primary-light: #eff6ff;
+            --primary-shadow: rgba(37, 99, 235, 0.3);
         }
         [data-theme="green"] {
-            --primary: #16a34a;
-            --primary-hover: #15803d;
-            --primary-light: #f0fdf4;
+            --primary-gradient: linear-gradient(135deg, #34d399 0%, #059669 50%, #064e3b 100%);
+            --primary-color: #059669;
+            --primary-light: #ecfdf5;
+            --primary-shadow: rgba(5, 150, 105, 0.3);
         }
         [data-theme="purple"] {
-            --primary: #9333ea;
-            --primary-hover: #7e22ce;
-            --primary-light: #faf5ff;
+            --primary-gradient: linear-gradient(135deg, #c084fc 0%, #7c3aed 50%, #4c1d95 100%);
+            --primary-color: #7c3aed;
+            --primary-light: #f5f3ff;
+            --primary-shadow: rgba(124, 58, 237, 0.3);
         }
         [data-theme="dark"] {
-            --primary: #475569;
-            --primary-hover: #334155;
-            --primary-light: #f1f5f9;
+            --primary-gradient: linear-gradient(135deg, #64748b 0%, #334155 50%, #0f172a 100%);
+            --primary-color: #334155;
+            --primary-light: #f8fafc;
+            --primary-shadow: rgba(51, 65, 85, 0.3);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 12px;
-            padding-bottom: 80px;
+            color: var(--text-main);
+            padding: 16px 12px 100px 12px;
+            background-image: radial-gradient(at 0% 0%, rgba(255,255,255,0.8) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(200,200,255,0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 520px;
             margin: 0 auto;
         }
 
+        /* Modern Gradient Header */
         .header {
+            background: var(--primary-gradient);
+            padding: 20px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px var(--primary-shadow);
+            margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 12px;
+            color: white;
+            transition: all 0.3s ease;
         }
 
         .header h1 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--primary);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
         .btn-theme {
-            background: var(--primary-light);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 6px 12px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 14px;
+            border-radius: 20px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
+        .btn-theme:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Card Container */
         .card {
             background: var(--card-bg);
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 12px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 16px;
         }
 
+        /* Voice Mic Section */
         .voice-section {
             text-align: center;
-            padding: 20px 10px;
+            padding: 24px 12px;
         }
 
         .mic-btn {
-            background: var(--primary);
+            background: var(--primary-gradient);
             color: white;
             border: none;
-            width: 70px;
-            height: 70px;
+            width: 76px;
+            height: 76px;
             border-radius: 50%;
-            font-size: 28px;
+            font-size: 32px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px -2px var(--primary-shadow);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-btn:active {
+            transform: scale(0.92);
         }
 
         .mic-btn.recording {
-            animation: pulse 1.2s infinite;
-            background: #ef4444;
+            animation: pulseGlow 1.5s infinite;
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
         .status-text {
-            margin-top: 10px;
+            margin-top: 14px;
             font-size: 13px;
-            color: #64748b;
-            font-weight: 500;
+            color: var(--text-muted);
+            font-weight: 600;
         }
 
+        /* Forms UI */
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
             font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-weight: 700;
+            margin-bottom: 6px;
             color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-control {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            background: #f8fafc;
+            border-radius: 12px;
             font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
             outline: none;
+            transition: all 0.2s ease;
         }
 
         .form-control:focus {
-            border-color: var(--primary);
+            background: #ffffff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
         }
 
         .row {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
         .col {
@@ -169,46 +214,67 @@
 
         .btn-add {
             width: 100%;
-            background: var(--primary);
+            background: var(--primary-gradient);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 10px;
+            box-shadow: 0 6px 16px -2px var(--primary-shadow);
+            transition: all 0.2s ease;
+        }
+
+        .btn-add:active {
+            transform: scale(0.98);
+            opacity: 0.9;
         }
 
         .timer-badge {
             display: none;
-            background: #fef3c7;
-            color: #d97706;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
+            background: #fffbebf5;
+            color: #b45309;
+            border: 1px solid #fde68a;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
             text-align: center;
-            margin-bottom: 10px;
-            font-weight: 600;
+            margin-bottom: 14px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+        }
+
+        /* Table Design */
+        .card-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-main);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 13px;
-        }
-
-        th, td {
-            padding: 10px 8px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
         }
 
         th {
             background: var(--primary-light);
-            color: var(--primary);
-            font-weight: 700;
+            color: var(--primary-color);
+            font-weight: 800;
+            padding: 12px 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .text-right {
@@ -219,78 +285,112 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            font-weight: 700;
-            font-size: 15px;
-            border-top: 2px solid var(--primary);
-            margin-top: 8px;
+            padding: 16px 8px;
+            font-weight: 800;
+            font-size: 16px;
+            border-top: 2px dashed var(--border-color);
+            margin-top: 12px;
+            color: var(--text-main);
+        }
+
+        .grand-total-amount {
+            color: var(--primary-color);
+            font-size: 18px;
         }
 
         .action-btns {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 16px;
         }
 
         .btn-action {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             background: white;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
             cursor: pointer;
             text-align: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .btn-action:active {
+            transform: scale(0.97);
+            background: #f8fafc;
         }
 
         .btn-danger {
-            color: #dc2626;
-            border-color: #fca5a5;
+            color: #ef4444;
+            border-color: #fecaca;
+            background: #fef2f2;
         }
 
-        /* Modal Theme Selector */
+        /* Theme Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             align-items: center;
             justify-content: center;
             z-index: 999;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 85%;
-            max-width: 320px;
+            padding: 24px;
+            border-radius: 24px;
+            width: 88%;
+            max-width: 340px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .theme-option {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-radius: 8px;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
             cursor: pointer;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .theme-option:active {
+            transform: scale(0.98);
+            background: #f8fafc;
         }
 
         .theme-color-dot {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- Header dengan Gradasi Modern -->
     <div class="header">
-        <h1>MARS 1930 BELANJA V.1</h1>
+        <h1>MARS 1930 BELANJA</h1>
         <button class="btn-theme" onclick="openThemeModal()">🎨 Warna UI</button>
     </div>
 
@@ -335,7 +435,7 @@
 
     <!-- Data Table Card -->
     <div class="card">
-        <h3>Daftar Belanja</h3>
+        <div class="card-title">Daftar Belanja</div>
         <div style="overflow-x:auto;">
             <table>
                 <thead>
@@ -348,14 +448,14 @@
                     </tr>
                 </thead>
                 <tbody id="tabelBody">
-                    <!-- Data belanja masuk di sini -->
+                    <!-- Data belanja diisi via script -->
                 </tbody>
             </table>
         </div>
 
         <div class="total-box">
-            <span>TOTAL BELANJA:</span>
-            <span id="grandTotal">Rp 0</span>
+            <span>TOTAL BELANJA</span>
+            <span class="grand-total-amount" id="grandTotal">Rp 0</span>
         </div>
 
         <div class="action-btns">
@@ -365,33 +465,33 @@
     </div>
 </div>
 
-<!-- Modal Selector Tema -->
+<!-- Modal Theme Switcher -->
 <div class="modal" id="themeModal">
     <div class="modal-content">
-        <h3 style="margin-bottom:12px; font-size:16px;">Pilih Warna UI</h3>
+        <h3 style="margin-bottom:16px; font-size:17px; font-weight:800;">Pilih Tema Warna</h3>
         
         <div class="theme-option" onclick="setTheme('red')">
-            <div class="theme-color-dot" style="background:#dc2626;"></div>
-            <span>Merah (Default)</span>
+            <div class="theme-color-dot" style="background: linear-gradient(135deg, #ef4444, #991b1b);"></div>
+            <span>Merah Modern (Default)</span>
         </div>
         <div class="theme-option" onclick="setTheme('blue')">
-            <div class="theme-color-dot" style="background:#2563eb;"></div>
-            <span>Biru Ocean</span>
+            <div class="theme-color-dot" style="background: linear-gradient(135deg, #38bdf8, #1e40af);"></div>
+            <span>Biru Sunset</span>
         </div>
         <div class="theme-option" onclick="setTheme('green')">
-            <div class="theme-color-dot" style="background:#16a34a;"></div>
-            <span>Hijau Emerald</span>
+            <div class="theme-color-dot" style="background: linear-gradient(135deg, #34d399, #064e3b);"></div>
+            <span>Hijau Fresh</span>
         </div>
         <div class="theme-option" onclick="setTheme('purple')">
-            <div class="theme-color-dot" style="background:#9333ea;"></div>
-            <span>Ungu Royal</span>
+            <div class="theme-color-dot" style="background: linear-gradient(135deg, #c084fc, #4c1d95);"></div>
+            <span>Ungu Elegant</span>
         </div>
         <div class="theme-option" onclick="setTheme('dark')">
-            <div class="theme-color-dot" style="background:#475569;"></div>
-            <span>Dark / Onyx</span>
+            <div class="theme-color-dot" style="background: linear-gradient(135deg, #64748b, #0f172a);"></div>
+            <span>Dark Midnight</span>
         </div>
 
-        <button class="btn-add" style="margin-top:10px; background:#64748b;" onclick="closeThemeModal()">Tutup</button>
+        <button class="btn-add" style="margin-top:14px; background: #64748b; box-shadow:none;" onclick="closeThemeModal()">Tutup</button>
     </div>
 </div>
 
@@ -402,10 +502,8 @@
     let autoSaveTimer = null;
     let countdownVal = 4;
 
-    // Inisialisasi Tanggal Hari Ini
     document.getElementById('inputTanggal').valueAsDate = new Date();
 
-    // Load Theme
     const savedTheme = localStorage.getItem('mars1930_theme') || 'red';
     setTheme(savedTheme, false);
 
@@ -432,7 +530,7 @@
                     <td class="text-right">${item.qty}</td>
                     <td class="text-right">${item.harga.toLocaleString('id-ID')}</td>
                     <td class="text-right"><b>${rowTotal.toLocaleString('id-ID')}</b></td>
-                    <td class="text-right"><button style="color:red; border:none; background:none; cursor:pointer;" onclick="hapusItem(${index})">✕</button></td>
+                    <td class="text-right"><button style="color:#ef4444; border:none; background:none; cursor:pointer; font-weight:bold; font-size:16px;" onclick="hapusItem(${index})">✕</button></td>
                 </tr>
             `;
         });
@@ -461,7 +559,6 @@
         belanjaData.push({ tanggal: tgl, item: item, qty: qty, harga: harga });
         renderTabel();
 
-        // Reset Input Form
         document.getElementById('inputItem').value = '';
         document.getElementById('inputQty').value = '';
         document.getElementById('inputHarga').value = '';
@@ -495,18 +592,14 @@
         a.click();
     }
 
-    // --- SPOKEN NUMBER & SPEECH ENGINE ---
     function parseSpokenPrice(text) {
         text = text.toLowerCase().replace(/rp|rupiah/g, '').trim();
-        
-        // Konversi kata angka bahasa Indonesia ke angka
         let wordMap = {
             'nol':0, 'satu':1, 'dua':2, 'tiga':3, 'empat':4, 'lima':5,
             'enam':6, 'tujuh':7, 'delapan':8, 'sembilan':9, 'sepuluh':10,
             'sebelas':11, 'seratus':100, 'seribu':1000
         };
 
-        // Deteksi bentuk singkatan "rb" atau "ribu"
         if(text.includes('rb') || text.includes('ribu')) {
             let clean = text.replace('ribu', '').replace('rb', '').trim();
             let val = parseFloat(clean) || wordMap[clean] || 0;
@@ -570,7 +663,6 @@
     }
 
     function parseVoiceInput(text) {
-        // Contoh format ucapan: "Beras 5kg jumlah 2 harga 25 ribu" atau "Minyak goreng harga 180 ribu"
         let parts = text.split('harga');
         let itemPart = parts[0] || '';
         let hargaPart = parts[1] || '';
@@ -619,7 +711,6 @@
         document.getElementById('timerBadge').style.display = 'none';
     }
 
-    // Render Data Awal
     renderTabel();
 </script>
 
