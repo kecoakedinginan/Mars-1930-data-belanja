@@ -3,716 +3,1172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BELANJANA KECOA</title>
+    <title>BELANJANA KECOA - Catatan Belanja Voice AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: 'var(--color-brand-50, #f0fdfa)',
+                            100: 'var(--color-brand-100, #ccfbf1)',
+                            500: 'var(--color-brand-500, #14b8a6)',
+                            600: 'var(--color-brand-600, #0d9488)',
+                            700: 'var(--color-brand-700, #0f766e)',
+                            800: 'var(--color-brand-800, #115e59)',
+                            900: 'var(--color-brand-900, #134e4a)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
-            --primary-color: #dc2626;
-            --primary-light: #fef2f2;
-            --primary-shadow: rgba(220, 38, 38, 0.25);
-            --bg-color: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --color-brand-50: #f0fdfa;
+            --color-brand-100: #ccfbf1;
+            --color-brand-500: #14b8a6;
+            --color-brand-600: #0d9488;
+            --color-brand-700: #0f766e;
+            --color-brand-800: #115e59;
+            --color-brand-900: #134e4a;
         }
 
-        /* Dynamic Theme Variables */
-        [data-theme="red"] {
-            --primary-gradient: linear-gradient(135deg, #f87171 0%, #dc2626 50%, #991b1b 100%);
-            --primary-color: #dc2626;
-            --primary-light: #fef2f2;
-            --primary-shadow: rgba(220, 38, 38, 0.3);
+        /* Palette Preset Classes */
+        body.theme-teal {
+            --color-brand-50: #f0fdfa; --color-brand-100: #ccfbf1; --color-brand-500: #14b8a6;
+            --color-brand-600: #0d9488; --color-brand-700: #0f766e; --color-brand-800: #115e59; --color-brand-900: #134e4a;
         }
-        [data-theme="blue"] {
-            --primary-gradient: linear-gradient(135deg, #38bdf8 0%, #2563eb 50%, #1e40af 100%);
-            --primary-color: #2563eb;
-            --primary-light: #eff6ff;
-            --primary-shadow: rgba(37, 99, 235, 0.3);
+        body.theme-emerald {
+            --color-brand-50: #ecfdf5; --color-brand-100: #d1fae5; --color-brand-500: #10b981;
+            --color-brand-600: #059669; --color-brand-700: #047857; --color-brand-800: #065f46; --color-brand-900: #064e3b;
         }
-        [data-theme="green"] {
-            --primary-gradient: linear-gradient(135deg, #34d399 0%, #059669 50%, #064e3b 100%);
-            --primary-color: #059669;
-            --primary-light: #ecfdf5;
-            --primary-shadow: rgba(5, 150, 105, 0.3);
+        body.theme-indigo {
+            --color-brand-50: #eef2ff; --color-brand-100: #e0e7ff; --color-brand-500: #6366f1;
+            --color-brand-600: #4f46e5; --color-brand-700: #4338ca; --color-brand-800: #3730a3; --color-brand-900: #312e81;
         }
-        [data-theme="purple"] {
-            --primary-gradient: linear-gradient(135deg, #c084fc 0%, #7c3aed 50%, #4c1d95 100%);
-            --primary-color: #7c3aed;
-            --primary-light: #f5f3ff;
-            --primary-shadow: rgba(124, 58, 237, 0.3);
+        body.theme-rose {
+            --color-brand-50: #fff1f2; --color-brand-100: #ffe4e6; --color-brand-500: #f43f5e;
+            --color-brand-600: #e11d48; --color-brand-700: #be123c; --color-brand-800: #9f1239; --color-brand-900: #881337;
         }
-        [data-theme="dark"] {
-            --primary-gradient: linear-gradient(135deg, #64748b 0%, #334155 50%, #0f172a 100%);
-            --primary-color: #334155;
-            --primary-light: #f8fafc;
-            --primary-shadow: rgba(51, 65, 85, 0.3);
+        body.theme-amber {
+            --color-brand-50: #fffbeb; --color-brand-100: #fef3c7; --color-brand-500: #f59e0b;
+            --color-brand-600: #d97706; --color-brand-700: #b45309; --color-brand-800: #92400e; --color-brand-900: #78350f;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        body.theme-purple {
+            --color-brand-50: #faf5ff; --color-brand-100: #f3e8ff; --color-brand-500: #a855f7;
+            --color-brand-600: #9333ea; --color-brand-700: #7e22ce; --color-brand-800: #6b21a8; --color-brand-900: #581c87;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 16px 12px 100px 12px;
-            background-image: radial-gradient(at 0% 0%, rgba(255,255,255,0.8) 0px, transparent 50%),
-                              radial-gradient(at 100% 100%, rgba(200,200,255,0.1) 0px, transparent 50%);
-            background-attachment: fixed;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
-        .container {
-            max-width: 520px;
+        /* Mobile Container Guard */
+        .mobile-shell {
+            max-width: 480px;
             margin: 0 auto;
-        }
-
-        /* Modern Gradient Header */
-        .header {
-            background: var(--primary-gradient);
-            padding: 20px 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px -5px var(--primary-shadow);
-            margin-bottom: 16px;
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            transition: all 0.3s ease;
+            flex-direction: column;
+            box-shadow: 0 0 25px rgba(0,0,0,0.08);
+            position: relative;
+            padding-bottom: 90px;
         }
 
-        .header h1 {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        /* Microphone Pulse Animation */
+        @keyframes fab-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); transform: scale(1); }
+            70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); transform: scale(1); }
         }
 
-        .btn-theme {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .mic-recording {
+            animation: fab-pulse 1.4s infinite !important;
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
         }
 
-        .btn-theme:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.3);
+        /* Sound Wave Animation */
+        .sound-bar {
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            border-radius: 2px;
+            background-color: #ef4444;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+        .sound-bar:nth-child(1) { animation-delay: 0.0s; }
+        .sound-bar:nth-child(2) { animation-delay: 0.2s; }
+        .sound-bar:nth-child(3) { animation-delay: 0.4s; }
+        .sound-bar:nth-child(4) { animation-delay: 0.1s; }
+        .sound-bar:nth-child(5) { animation-delay: 0.3s; }
+
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 20px; }
         }
 
-        /* Card Container */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            margin-bottom: 16px;
+        /* Smooth slide-up transition for modals */
+        .modal-slide-up {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Voice Mic Section */
-        .voice-section {
-            text-align: center;
-            padding: 24px 12px;
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        .mic-btn {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            font-size: 32px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px -2px var(--primary-shadow);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        /* Toast Popup */
+        .toast-pop {
+            animation: toastPop 0.3s ease forwards;
+        }
+        @keyframes toastPop {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
         }
 
-        .mic-btn:active {
-            transform: scale(0.92);
+        /* Custom scrollbar for mobile lists */
+        ::-webkit-scrollbar {
+            width: 4px;
         }
-
-        .mic-btn.recording {
-            animation: pulseGlow 1.5s infinite;
-            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-        }
-
-        @keyframes pulseGlow {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
-            70% { transform: scale(1.08); box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .status-text {
-            margin-top: 14px;
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        /* Forms UI */
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid var(--border-color);
-            background: #f8fafc;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .form-control:focus {
-            background: #ffffff;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        .row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .col {
-            flex: 1;
-        }
-
-        .btn-add {
-            width: 100%;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 6px 16px -2px var(--primary-shadow);
-            transition: all 0.2s ease;
-        }
-
-        .btn-add:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-
-        .timer-badge {
-            display: none;
-            background: #fffbebf5;
-            color: #b45309;
-            border: 1px solid #fde68a;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 14px;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
-        }
-
-        /* Table Design */
-        .card-title {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--text-main);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-            font-size: 13px;
-        }
-
-        th {
-            background: var(--primary-light);
-            color: var(--primary-color);
-            font-weight: 800;
-            padding: 12px 10px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .total-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 8px;
-            font-weight: 800;
-            font-size: 16px;
-            border-top: 2px dashed var(--border-color);
-            margin-top: 12px;
-            color: var(--text-main);
-        }
-
-        .grand-total-amount {
-            color: var(--primary-color);
-            font-size: 18px;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .btn-action {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: white;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-main);
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-        }
-
-        .btn-action:active {
-            transform: scale(0.97);
-            background: #f8fafc;
-        }
-
-        .btn-danger {
-            color: #ef4444;
-            border-color: #fecaca;
-            background: #fef2f2;
-        }
-
-        /* Theme Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: white;
-            padding: 24px;
-            border-radius: 24px;
-            width: 88%;
-            max-width: 340px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .theme-option {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 14px;
-            border-radius: 14px;
-            cursor: pointer;
-            margin-bottom: 8px;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .theme-option:active {
-            transform: scale(0.98);
-            background: #f8fafc;
-        }
-
-        .theme-color-dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-200 dark:bg-slate-950 transition-colors duration-300 theme-teal">
 
-<div class="container">
-    <!-- Header dengan Gradasi Modern -->
-    <div class="header">
-        <h1>MARS 1930 BELANJA</h1>
-        <button class="btn-theme" onclick="openThemeModal()">🎨 Warna UI</button>
-    </div>
+    <div class="mobile-shell bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
 
-    <!-- Voice Control Card -->
-    <div class="card voice-section">
-        <button class="mic-btn" id="micBtn" onclick="toggleVoice()">🎙️</button>
-        <div class="status-text" id="statusText">Tekan mikrofon untuk mulai bicara</div>
-    </div>
-
-    <!-- Input Form Card -->
-    <div class="card">
-        <div id="timerBadge" class="timer-badge">Auto-Simpan dalam <span id="countdown">4</span>s... (Tekan Mic untuk Batalkan)</div>
-        
-        <div class="form-group">
-            <label>Tanggal</label>
-            <input type="date" id="inputTanggal" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Nama Barang / Item</label>
-            <input type="text" id="inputItem" class="form-control" placeholder="Contoh: Beras 5kg">
-        </div>
-
-        <div class="row">
-            <div class="col form-group">
-                <label>Qty / Jumlah</label>
-                <input type="number" id="inputQty" class="form-control" placeholder="1" oninput="hitungTotalInput()">
-            </div>
-            <div class="col form-group">
-                <label>Harga Satuan (Rp)</label>
-                <input type="number" id="inputHarga" class="form-control" placeholder="15000" oninput="hitungTotalInput()">
+        <!-- Toast Notification Alert Top Center -->
+        <div id="mobileToast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[420px] pointer-events-none hidden">
+            <div id="toastInner" class="bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700/80 toast-pop">
+                <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+                <span id="toastMessage" class="flex-1 leading-snug">Pesan pemberitahuan...</span>
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Total Harga (Rp)</label>
-            <input type="number" id="inputTotal" class="form-control" placeholder="0" readonly>
+        <!-- Top Header Status Bar -->
+        <header class="bg-gradient-to-r from-brand-700 via-brand-800 to-slate-900 text-white px-5 pt-5 pb-6 rounded-b-[2rem] shadow-md sticky top-0 z-30">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10">
+                        <i class="fa-solid fa-bug text-brand-100 text-base"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base font-bold tracking-tight leading-none flex items-center gap-1.5">
+                            BELANJANA KECOA <span class="bg-brand-500/30 text-brand-100 text-[10px] px-2 py-0.5 rounded-full font-semibold border border-brand-100/20">Mobile</span>
+                        </h1>
+                        <p class="text-[11px] text-brand-100/70 mt-0.5">Catatan Belanja Suara Pintar</p>
+                    </div>
+                </div>
+
+                <!-- Action Button Options -->
+                <div class="flex items-center gap-1">
+                    <button id="btnToggleTheme" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/90 hover:bg-white/20 active:scale-95 transition" title="Ganti Mode Gelap/Terang">
+                        <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                    </button>
+                    <button id="btnOpenMenu" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/90 hover:bg-white/20 active:scale-95 transition">
+                        <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Date Selector Pill -->
+            <div class="flex items-center justify-between bg-white/10 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/10 mt-1">
+                <div class="flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-days text-brand-100 text-xs"></i>
+                    <span class="text-xs text-brand-100 font-medium">Tanggal:</span>
+                </div>
+                <input type="date" id="inputFilterDate" class="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer">
+            </div>
+
+            <!-- Top Summary Cards Pill -->
+            <div class="grid grid-cols-2 gap-2.5 mt-3">
+                <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10">
+                    <p class="text-[10px] text-brand-100/70 font-semibold uppercase tracking-wider">Total Hari Ini</p>
+                    <p id="topTodayTotal" class="text-sm font-black text-amber-300 mt-0.5">Rp 0</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10">
+                    <p class="text-[10px] text-brand-100/70 font-semibold uppercase tracking-wider">Jumlah Item</p>
+                    <p id="topTodayItems" class="text-sm font-black text-white mt-0.5">0 Item</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Scroll Area -->
+        <main class="flex-1 px-4 py-4 space-y-4">
+
+            <!-- TAB 1: LIST / CATATAN BELANJA VIEW -->
+            <div id="viewList" class="space-y-3">
+                
+                <!-- Voice Transcript Live Bar -->
+                <div id="voiceLiveBar" class="bg-slate-900 dark:bg-slate-950 text-white p-3.5 rounded-2xl text-xs space-y-2 shadow-sm border border-slate-800">
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-800 pb-1.5">
+                        <span class="flex items-center gap-1.5 font-medium text-brand-500">
+                            <i class="fa-solid fa-ear-listen text-brand-500 animate-pulse"></i> Deteksi Suara:
+                        </span>
+                        <span id="voiceStatusBadge" class="bg-brand-500/20 text-brand-100 px-2 py-0.5 rounded-full font-mono text-[10px]">Ready</span>
+                    </div>
+                    <p id="liveTranscriptText" class="text-slate-300 font-mono text-xs italic min-h-[1.5rem] break-words">
+                        "Tekan tombol mikrofon di bawah & sebut belanjaan Anda..."
+                    </p>
+                    
+                    <!-- Extracted breakdown badge -->
+                    <div class="grid grid-cols-3 gap-1 pt-1 text-[10px] font-mono text-slate-300 border-t border-slate-800">
+                        <div>Item: <span id="parsedLiveItem" class="text-amber-300 font-semibold">-</span></div>
+                        <div>Qty: <span id="parsedLiveQty" class="text-emerald-300 font-semibold">-</span></div>
+                        <div>Harga: <span id="parsedLivePrice" class="text-cyan-300 font-semibold">-</span></div>
+                    </div>
+                </div>
+
+                <!-- Filter Header Info -->
+                <div class="flex items-center justify-between px-1">
+                    <h2 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-receipt text-brand-600"></i> Daftar Catatan <span id="dateHeaderTitle" class="text-brand-700 dark:text-brand-500">(Hari Ini)</span>
+                    </h2>
+                    <span id="itemCounterBadge" class="bg-brand-100 dark:bg-brand-900/60 text-brand-800 dark:text-brand-100 text-[10px] font-bold px-2 py-0.5 rounded-full">0 Data</span>
+                </div>
+
+                <!-- Shopping Items Cards Container -->
+                <div id="expenseCardsList" class="space-y-2.5">
+                    <!-- Cards rendered via JavaScript -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyStateMobile" class="bg-white dark:bg-slate-800 rounded-2xl p-8 text-center border border-slate-200/80 dark:border-slate-700 shadow-sm hidden">
+                    <div class="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400 dark:text-slate-300">
+                        <i class="fa-solid fa-basket-shopping text-xl"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Belum ada catatan belanja</p>
+                    <p class="text-[11px] text-slate-400 dark:text-slate-400 mt-1">Tekan mic di tengah bawah untuk langsung merekam suara Anda.</p>
+                </div>
+            </div>
+
+            <!-- TAB 2: MANUAL FORM INPUT VIEW -->
+            <div id="viewForm" class="hidden space-y-3">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-2">
+                        <h2 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen-to-square text-brand-600"></i> <span id="formHeaderTitle">Input Manual Belanja</span>
+                        </h2>
+                        <button type="button" id="btnCancelEdit" class="text-[11px] text-rose-600 font-medium hidden">
+                            Batal Edit
+                        </button>
+                    </div>
+
+                    <form id="mobileExpenseForm" class="space-y-3">
+                        <input type="hidden" id="formEditId" value="">
+
+                        <!-- Tanggal -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Tanggal</label>
+                            <input type="date" id="formInputDate" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                        </div>
+
+                        <!-- Item Name with Voice Mic Button -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Item / Deskripsi</label>
+                            <div class="relative flex items-center">
+                                <input type="text" id="formInputItem" placeholder="Misal: Minyak Goreng, Telur, Beras" required class="w-full pl-3 pr-10 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                                <button type="button" id="btnMicItemOnly" class="absolute right-2 text-slate-400 hover:text-brand-600 p-1.5 rounded-lg active:scale-90 transition">
+                                    <i class="fa-solid fa-microphone text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Qty & Price Grid -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Jumlah (Qty)</label>
+                                <div class="relative flex items-center">
+                                    <input type="number" id="formInputQty" step="any" min="0.01" placeholder="1" required class="w-full pl-3 pr-8 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                                    <button type="button" id="btnMicQtyOnly" class="absolute right-1 text-slate-400 hover:text-brand-600 p-1.5 rounded-lg active:scale-90 transition">
+                                        <i class="fa-solid fa-microphone text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Harga Satuan (Rp)</label>
+                                <div class="relative flex items-center">
+                                    <input type="number" id="formInputPrice" step="any" min="0.01" placeholder="0" required class="w-full pl-3 pr-8 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                                    <button type="button" id="btnMicPriceOnly" class="absolute right-1 text-slate-400 hover:text-brand-600 p-1.5 rounded-lg active:scale-90 transition">
+                                        <i class="fa-solid fa-microphone text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subtotal Preview -->
+                        <div class="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-700 flex justify-between items-center text-xs">
+                            <span class="text-slate-500 dark:text-slate-400 font-medium">Subtotal:</span>
+                            <span id="formSubtotalPreview" class="font-bold text-brand-700 dark:text-brand-500">Rp 0</span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="btnSubmitForm" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check"></i> <span id="btnSubmitFormText">Simpan Belanjaan</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 3: REKAP & SETTINGS VIEW -->
+            <div id="viewStats" class="hidden space-y-3">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                    <h2 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-700 pb-2">
+                        <i class="fa-solid fa-chart-pie text-brand-600"></i> Rekapan Belanja
+                    </h2>
+
+                    <div class="space-y-2">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl flex justify-between items-center">
+                            <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Total Keseluruhan</span>
+                            <span id="statGrandTotalAll" class="text-sm font-black text-brand-700 dark:text-brand-500">Rp 0</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl flex justify-between items-center">
+                            <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Total Hari Ini</span>
+                            <span id="statTodayTotalAll" class="text-sm font-black text-amber-600 dark:text-amber-400">Rp 0</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl flex justify-between items-center">
+                            <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Jumlah Transaksi</span>
+                            <span id="statTotalRowsAll" class="text-xs font-bold text-slate-800 dark:text-slate-200">0 Data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Color Selector Section -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                    <h2 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-700 pb-2">
+                        <i class="fa-solid fa-palette text-brand-600"></i> Pilihan Warna Tema
+                    </h2>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setAppTheme('teal')" class="p-2 bg-teal-50 dark:bg-teal-950/40 border border-teal-300 dark:border-teal-700 rounded-xl flex flex-col items-center gap-1 text-[11px] font-semibold text-teal-700 dark:text-teal-300 active:scale-95 transition">
+                            <span class="w-4 h-4 rounded-full bg-teal-500"></span> Teal
+                        </button>
+                        <button onclick="setAppTheme('emerald')" class="p-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 rounded-xl flex flex-col items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 active:scale-95 transition">
+                            <span class="w-4 h-4 rounded-full bg-emerald-500"></span> Emerald
+                        </button>
+                        <button onclick="setAppTheme('indigo')" class="p-2 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-300 dark:border-indigo-700 rounded-xl flex flex-col items-center gap-1 text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 active:scale-95 transition">
+                            <span class="w-4 h-4 rounded-full bg-indigo-500"></span> Indigo
+                        </button>
+                        <button onclick="setAppTheme('rose')" class="p-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-700 rounded-xl flex flex-col items-center gap-1 text-[11px] font-semibold text-rose-700 dark:text-rose-300 active:scale-95 transition">
+                            <span class="w-4 h-4 rounded-full bg-rose-500"></span> Rose
+                        </button>
+                        <button onclick="setAppTheme('amber')" class="p-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 rounded-xl flex flex-col items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300 active:scale-95 transition">
+                            <span class="w-4 h-4 rounded-full bg-amber-500"></span> Amber
+                        </button>
+                        <button onclick="setAppTheme('purple')" class="p-2 bg-purple-50 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-700 rounded-xl flex flex-col items-center gap-1 text-[11px] font-semibold text-purple-700 dark:text-purple-300 active:scale-95 transition">
+                            <span class="w-4 h-4 rounded-full bg-purple-500"></span> Purple
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-2">
+                    <h2 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-2">Opsi Ekspor Data</h2>
+                    
+                    <button id="btnExportCSV" class="w-full py-2.5 px-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl flex items-center justify-between transition">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-file-csv text-emerald-600 text-sm"></i> Unduh File CSV</span>
+                        <i class="fa-solid fa-chevron-right text-slate-400 text-[10px]"></i>
+                    </button>
+
+                    <button id="btnDownloadHTML" class="w-full py-2.5 px-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl flex items-center justify-between transition">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-file-code text-indigo-600 text-sm"></i> Simpan File Aplikasi HTML</span>
+                        <i class="fa-solid fa-chevron-right text-slate-400 text-[10px]"></i>
+                    </button>
+
+                    <button id="btnClearAll" class="w-full py-2.5 px-3 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-700 dark:text-rose-300 text-xs font-semibold rounded-xl flex items-center justify-between transition border border-rose-100 dark:border-rose-900/50 mt-2">
+                        <span class="flex items-center gap-2"><i class="fa-regular fa-trash-can text-rose-600 text-sm"></i> Hapus Semua Catatan</span>
+                        <i class="fa-solid fa-chevron-right text-rose-300 text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Floating Review & Countdown Modal (Pops up when voice input succeeds) -->
+        <div id="reviewModalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center hidden">
+            <div class="w-full max-w-[480px] bg-slate-950 text-white rounded-t-[2rem] p-5 border-t border-brand-500/30 shadow-2xl modal-slide-up space-y-3">
+                
+                <!-- Countdown Header Bar -->
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-amber-400 animate-spin text-sm"></i>
+                        <span class="text-xs font-bold text-brand-100">Konfirmasi Suara Otomatis</span>
+                    </div>
+                    <span id="reviewTimerText" class="text-base font-black text-amber-400 font-mono">4.0s</span>
+                </div>
+
+                <!-- Smooth Progress Bar -->
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="reviewProgressBar" class="bg-amber-400 h-full w-full transition-all duration-100"></div>
+                </div>
+
+                <!-- Preview Box -->
+                <div class="bg-slate-900/90 p-3.5 rounded-2xl border border-slate-800 space-y-1.5 text-xs">
+                    <p class="text-[11px] text-slate-400">Hasil Pembacaan Suara:</p>
+                    <p id="reviewParsedItem" class="text-sm font-bold text-amber-200">Item: -</p>
+                    <div class="flex justify-between text-xs text-slate-300 pt-1 border-t border-slate-800">
+                        <span id="reviewParsedQty">Qty: -</span>
+                        <span id="reviewParsedPrice">Harga: -</span>
+                    </div>
+                    <div class="text-right pt-1 border-t border-slate-800/60">
+                        <span class="text-[11px] text-slate-400">Total: </span>
+                        <span id="reviewParsedTotal" class="text-sm font-bold text-brand-100">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- Action Control Buttons -->
+                <div class="grid grid-cols-3 gap-2 pt-1">
+                    <button id="btnModalCancel" type="button" class="py-2.5 bg-rose-600/90 hover:bg-rose-600 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-xmark"></i> Batal
+                    </button>
+                    <button id="btnModalEdit" type="button" class="py-2.5 bg-amber-600/90 hover:bg-amber-600 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button id="btnModalConfirm" type="button" class="py-2.5 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-check"></i> Simpan
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <button class="btn-add" onclick="tambahDataManual()">+ Tambah ke Tabel</button>
-    </div>
-
-    <!-- Data Table Card -->
-    <div class="card">
-        <div class="card-title">Daftar Belanja</div>
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th class="text-right">Qty</th>
-                        <th class="text-right">Harga</th>
-                        <th class="text-right">Total</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="tabelBody">
-                    <!-- Data belanja diisi via script -->
-                </tbody>
-            </table>
+        <!-- Options Popup Modal (Top Right Ellipsis Menu) -->
+        <div id="optionsMenuModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-start justify-end p-4 hidden">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 w-56 p-2 space-y-1 text-xs mt-12">
+                <button id="menuOptToday" class="w-full text-left px-3 py-2 rounded-xl font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-day text-brand-600"></i> Filter Hari Ini
+                </button>
+                <button id="menuOptAll" class="w-full text-left px-3 py-2 rounded-xl font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul text-brand-600"></i> Semua Tanggal
+                </button>
+                <hr class="border-slate-100 dark:border-slate-700">
+                <button id="menuOptClose" class="w-full text-left px-3 py-2 rounded-xl font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2">
+                    <i class="fa-solid fa-xmark"></i> Tutup
+                </button>
+            </div>
         </div>
 
-        <div class="total-box">
-            <span>TOTAL BELANJA</span>
-            <span class="grand-total-amount" id="grandTotal">Rp 0</span>
-        </div>
-
-        <div class="action-btns">
-            <button class="btn-action" onclick="eksporCSV()">📥 Ekspor CSV</button>
-            <button class="btn-action btn-danger" onclick="hapusSemua()">🗑️ Hapus Semua</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Theme Switcher -->
-<div class="modal" id="themeModal">
-    <div class="modal-content">
-        <h3 style="margin-bottom:16px; font-size:17px; font-weight:800;">Pilih Tema Warna</h3>
-        
-        <div class="theme-option" onclick="setTheme('red')">
-            <div class="theme-color-dot" style="background: linear-gradient(135deg, #ef4444, #991b1b);"></div>
-            <span>Merah Modern (Default)</span>
-        </div>
-        <div class="theme-option" onclick="setTheme('blue')">
-            <div class="theme-color-dot" style="background: linear-gradient(135deg, #38bdf8, #1e40af);"></div>
-            <span>Biru Sunset</span>
-        </div>
-        <div class="theme-option" onclick="setTheme('green')">
-            <div class="theme-color-dot" style="background: linear-gradient(135deg, #34d399, #064e3b);"></div>
-            <span>Hijau Fresh</span>
-        </div>
-        <div class="theme-option" onclick="setTheme('purple')">
-            <div class="theme-color-dot" style="background: linear-gradient(135deg, #c084fc, #4c1d95);"></div>
-            <span>Ungu Elegant</span>
-        </div>
-        <div class="theme-option" onclick="setTheme('dark')">
-            <div class="theme-color-dot" style="background: linear-gradient(135deg, #64748b, #0f172a);"></div>
-            <span>Dark Midnight</span>
-        </div>
-
-        <button class="btn-add" style="margin-top:14px; background: #64748b; box-shadow:none;" onclick="closeThemeModal()">Tutup</button>
-    </div>
-</div>
-
-<script>
-    let belanjaData = JSON.parse(localStorage.getItem('mars1930_belanja')) || [];
-    let isRecording = false;
-    let recognition = null;
-    let autoSaveTimer = null;
-    let countdownVal = 4;
-
-    document.getElementById('inputTanggal').valueAsDate = new Date();
-
-    const savedTheme = localStorage.getItem('mars1930_theme') || 'red';
-    setTheme(savedTheme, false);
-
-    function openThemeModal() { document.getElementById('themeModal').style.display = 'flex'; }
-    function closeThemeModal() { document.getElementById('themeModal').style.display = 'none'; }
-    
-    function setTheme(themeName, save = true) {
-        document.documentElement.setAttribute('data-theme', themeName);
-        if(save) localStorage.setItem('mars1930_theme', themeName);
-        closeThemeModal();
-    }
-
-    function renderTabel() {
-        const tbody = document.getElementById('tabelBody');
-        tbody.innerHTML = '';
-        let total = 0;
-
-        belanjaData.forEach((item, index) => {
-            let rowTotal = item.qty * item.harga;
-            total += rowTotal;
-            tbody.innerHTML += `
-                <tr>
-                    <td><b>${item.item}</b><br><small style="color:#64748b">${item.tanggal}</small></td>
-                    <td class="text-right">${item.qty}</td>
-                    <td class="text-right">${item.harga.toLocaleString('id-ID')}</td>
-                    <td class="text-right"><b>${rowTotal.toLocaleString('id-ID')}</b></td>
-                    <td class="text-right"><button style="color:#ef4444; border:none; background:none; cursor:pointer; font-weight:bold; font-size:16px;" onclick="hapusItem(${index})">✕</button></td>
-                </tr>
-            `;
-        });
-
-        document.getElementById('grandTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
-        localStorage.setItem('mars1930_belanja', JSON.stringify(belanjaData));
-    }
-
-    function hitungTotalInput() {
-        let q = parseFloat(document.getElementById('inputQty').value) || 0;
-        let h = parseFloat(document.getElementById('inputHarga').value) || 0;
-        document.getElementById('inputTotal').value = q * h;
-    }
-
-    function tambahDataManual() {
-        let tgl = document.getElementById('inputTanggal').value;
-        let item = document.getElementById('inputItem').value.trim();
-        let qty = parseFloat(document.getElementById('inputQty').value) || 1;
-        let harga = parseFloat(document.getElementById('inputHarga').value) || 0;
-
-        if(!item || harga <= 0) {
-            alert('Mohon isi nama barang dan harga dengan benar!');
-            return;
-        }
-
-        belanjaData.push({ tanggal: tgl, item: item, qty: qty, harga: harga });
-        renderTabel();
-
-        document.getElementById('inputItem').value = '';
-        document.getElementById('inputQty').value = '';
-        document.getElementById('inputHarga').value = '';
-        document.getElementById('inputTotal').value = '';
-        
-        cancelAutoSave();
-    }
-
-    function hapusItem(index) {
-        belanjaData.splice(index, 1);
-        renderTabel();
-    }
-
-    function hapusSemua() {
-        if(confirm('Hapus seluruh data belanjaan?')) {
-            belanjaData = [];
-            renderTabel();
-        }
-    }
-
-    function eksporCSV() {
-        if(belanjaData.length === 0) return alert('Data kosong!');
-        let csv = 'Tanggal,Item,Qty,Harga,Total\n';
-        belanjaData.forEach(d => {
-            csv += `${d.tanggal},"${d.item}",${d.qty},${d.harga},${d.qty * d.harga}\n`;
-        });
-        let blob = new Blob([csv], { type: 'text/csv' });
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `Belanja_MARS1930_${new Date().toISOString().slice(0,10)}.csv`;
-        a.click();
-    }
-
-    function parseSpokenPrice(text) {
-        text = text.toLowerCase().replace(/rp|rupiah/g, '').trim();
-        let wordMap = {
-            'nol':0, 'satu':1, 'dua':2, 'tiga':3, 'empat':4, 'lima':5,
-            'enam':6, 'tujuh':7, 'delapan':8, 'sembilan':9, 'sepuluh':10,
-            'sebelas':11, 'seratus':100, 'seribu':1000
-        };
-
-        if(text.includes('rb') || text.includes('ribu')) {
-            let clean = text.replace('ribu', '').replace('rb', '').trim();
-            let val = parseFloat(clean) || wordMap[clean] || 0;
-            return val * 1000;
-        }
-        if(text.includes('juta') || text.includes('jt')) {
-            let clean = text.replace('juta', '').replace('jt', '').trim();
-            let val = parseFloat(clean) || wordMap[clean] || 0;
-            return val * 1000000;
-        }
-        
-        return parseFloat(text.replace(/[^0-9]/g, '')) || 0;
-    }
-
-    function toggleVoice() {
-        if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        <!-- App Bottom Navigation Bar with Thumb-Centric Voice FAB -->
+        <nav class="fixed bottom-0 left-0 right-0 z-40 max-w-[480px] mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 px-4 py-2 flex justify-between items-center shadow-lg">
             
-            if(!recognition) {
-                recognition = new SpeechRecognition();
-                recognition.lang = 'id-ID';
-                recognition.continuous = false;
-                recognition.interimResults = false;
+            <!-- Tab 1 Button -->
+            <button id="navTabList" class="flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 font-bold transition">
+                <i class="fa-solid fa-list-check text-lg"></i>
+                <span class="text-[10px]">Catatan</span>
+            </button>
 
-                recognition.onstart = function() {
-                    isRecording = true;
-                    document.getElementById('micBtn').classList.add('recording');
-                    document.getElementById('statusText').innerText = 'Mendengarkan... (Sebutkan: Barang, Jumlah, Harga)';
-                    cancelAutoSave();
-                };
+            <!-- Center Floating Action Button (Voice Input MIC) -->
+            <div class="relative -top-5 flex flex-col items-center">
+                <button id="btnMainVoiceFAB" type="button" class="w-14 h-14 bg-brand-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-brand-600/40 active:scale-90 transition transform border-4 border-slate-200 dark:border-slate-800">
+                    <i id="fabMicIcon" class="fa-solid fa-microphone text-xl"></i>
+                </button>
+                <span id="fabStatusLabel" class="text-[9px] font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 px-2 py-0.5 rounded-full shadow-xs border border-slate-200 dark:border-slate-700 mt-0.5">Tekan Mic</span>
+            </div>
 
-                recognition.onresult = function(event) {
-                    let transcript = event.results[0][0].transcript;
-                    document.getElementById('statusText').innerText = `Terdengar: "${transcript}"`;
-                    parseVoiceInput(transcript);
-                };
+            <!-- Tab 2 Button -->
+            <button id="navTabForm" class="flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium hover:text-slate-600 dark:hover:text-slate-200 transition">
+                <i class="fa-solid fa-pen-to-square text-lg"></i>
+                <span class="text-[10px]">Input</span>
+            </button>
 
-                recognition.onerror = function() {
-                    document.getElementById('statusText').innerText = 'Gagal mengenali suara. Coba lagi.';
-                    stopVoice();
-                };
+            <!-- Tab 3 Button -->
+            <button id="navTabStats" class="flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium hover:text-slate-600 dark:hover:text-slate-200 transition">
+                <i class="fa-solid fa-chart-pie text-lg"></i>
+                <span class="text-[10px]">Rekap</span>
+            </button>
+        </nav>
 
-                recognition.onend = function() {
-                    stopVoice();
-                };
-            }
+    </div>
 
-            if(isRecording) {
-                recognition.stop();
+    <script>
+        // --- State Management ---
+        let expenses = JSON.parse(localStorage.getItem('belanjaku_mobile_db')) || [];
+        let recognition = null;
+        let isRecording = false;
+        let activeMicTarget = 'MAIN'; // 'MAIN', 'ITEM', 'QTY', 'PRICE'
+        let silenceTimer = null;
+        let lastVoiceSentence = "";
+
+        // Review Countdown State
+        let countdownInterval = null;
+        let countdownTimeLeft = 4.0;
+        let pendingParsedData = null;
+
+        // Theme management
+        let currentTheme = localStorage.getItem('belanjaku_theme_color') || 'teal';
+        let isDarkMode = localStorage.getItem('belanjaku_dark_mode') === 'true';
+
+        // --- Theme Functions ---
+        function setAppTheme(themeName) {
+            document.body.classList.remove('theme-teal', 'theme-emerald', 'theme-indigo', 'theme-rose', 'theme-amber', 'theme-purple');
+            document.body.classList.add('theme-' + themeName);
+            localStorage.setItem('belanjaku_theme_color', themeName);
+            currentTheme = themeName;
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').classList.replace('fa-moon', 'fa-sun');
             } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('themeIcon').classList.replace('fa-sun', 'fa-moon');
+            }
+            localStorage.setItem('belanjaku_dark_mode', isDarkMode);
+        }
+
+        // Init Dark Mode & Theme Palette
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').classList.replace('fa-moon', 'fa-sun');
+        }
+        setAppTheme(currentTheme);
+
+        document.getElementById('btnToggleTheme').addEventListener('click', toggleDarkMode);
+
+        // --- DOM Elements ---
+        const inputFilterDate = document.getElementById('inputFilterDate');
+        const topTodayTotal = document.getElementById('topTodayTotal');
+        const topTodayItems = document.getElementById('topTodayItems');
+        const expenseCardsList = document.getElementById('expenseCardsList');
+        const emptyStateMobile = document.getElementById('emptyStateMobile');
+        const itemCounterBadge = document.getElementById('itemCounterBadge');
+        const dateHeaderTitle = document.getElementById('dateHeaderTitle');
+
+        // Navigation Tabs
+        const viewList = document.getElementById('viewList');
+        const viewForm = document.getElementById('viewForm');
+        const viewStats = document.getElementById('viewStats');
+        const navTabList = document.getElementById('navTabList');
+        const navTabForm = document.getElementById('navTabForm');
+        const navTabStats = document.getElementById('navTabStats');
+
+        // Main FAB Mic Elements
+        const btnMainVoiceFAB = document.getElementById('btnMainVoiceFAB');
+        const fabMicIcon = document.getElementById('fabMicIcon');
+        const fabStatusLabel = document.getElementById('fabStatusLabel');
+
+        // Live Voice Bar
+        const voiceLiveBar = document.getElementById('voiceLiveBar');
+        const voiceStatusBadge = document.getElementById('voiceStatusBadge');
+        const liveTranscriptText = document.getElementById('liveTranscriptText');
+        const parsedLiveItem = document.getElementById('parsedLiveItem');
+        const parsedLiveQty = document.getElementById('parsedLiveQty');
+        const parsedLivePrice = document.getElementById('parsedLivePrice');
+
+        // Form Elements
+        const mobileExpenseForm = document.getElementById('mobileExpenseForm');
+        const formEditId = document.getElementById('formEditId');
+        const formInputDate = document.getElementById('formInputDate');
+        const formInputItem = document.getElementById('formInputItem');
+        const formInputQty = document.getElementById('formInputQty');
+        const formInputPrice = document.getElementById('formInputPrice');
+        const formSubtotalPreview = document.getElementById('formSubtotalPreview');
+        const btnSubmitFormText = document.getElementById('btnSubmitFormText');
+        const btnCancelEdit = document.getElementById('btnCancelEdit');
+        const formHeaderTitle = document.getElementById('formHeaderTitle');
+
+        // Field Mic Buttons
+        const btnMicItemOnly = document.getElementById('btnMicItemOnly');
+        const btnMicQtyOnly = document.getElementById('btnMicQtyOnly');
+        const btnMicPriceOnly = document.getElementById('btnMicPriceOnly');
+
+        // Modal Countdown Elements
+        const reviewModalOverlay = document.getElementById('reviewModalOverlay');
+        const reviewTimerText = document.getElementById('reviewTimerText');
+        const reviewProgressBar = document.getElementById('reviewProgressBar');
+        const reviewParsedItem = document.getElementById('reviewParsedItem');
+        const reviewParsedQty = document.getElementById('reviewParsedQty');
+        const reviewParsedPrice = document.getElementById('reviewParsedPrice');
+        const reviewParsedTotal = document.getElementById('reviewParsedTotal');
+        const btnModalCancel = document.getElementById('btnModalCancel');
+        const btnModalEdit = document.getElementById('btnModalEdit');
+        const btnModalConfirm = document.getElementById('btnModalConfirm');
+
+        // Summary Stats Elements
+        const statGrandTotalAll = document.getElementById('statGrandTotalAll');
+        const statTodayTotalAll = document.getElementById('statTodayTotalAll');
+        const statTotalRowsAll = document.getElementById('statTotalRowsAll');
+        const btnExportCSV = document.getElementById('btnExportCSV');
+        const btnDownloadHTML = document.getElementById('btnDownloadHTML');
+        const btnClearAll = document.getElementById('btnClearAll');
+
+        // Menu Modal
+        const btnOpenMenu = document.getElementById('btnOpenMenu');
+        const optionsMenuModal = document.getElementById('optionsMenuModal');
+        const menuOptToday = document.getElementById('menuOptToday');
+        const menuOptAll = document.getElementById('menuOptAll');
+        const menuOptClose = document.getElementById('menuOptClose');
+
+        /**
+         * ROBUST INDONESIAN NUMBER & PRICE PARSER ENGINE
+         * Solves spoken inputs like "180.000", "180 ribu", "180rb", "seratus delapan puluh ribu"
+         */
+        function parseIndonesianSpokenNumbers(str) {
+            if (!str) return null;
+            let text = str.toLowerCase().trim();
+
+            text = text.replace(/rp\.?/g, '').trim();
+
+            const formattedThousandsMatch = text.match(/\b\d{1,3}(?:[\.,]\d{3})+\b/);
+            if (formattedThousandsMatch) {
+                const cleanedNum = parseFloat(formattedThousandsMatch[0].replace(/[\.,]/g, ''));
+                if (!isNaN(cleanedNum) && cleanedNum > 0) {
+                    return cleanedNum;
+                }
+            }
+
+            if (text.includes('setengah') && !text.includes('ribu') && !text.includes('ratus')) return 0.5;
+
+            const wordMap = {
+                'nol': 0, 'satu': 1, 'dua': 2, 'tiga': 3, 'empat': 4, 'lima': 5,
+                'enam': 6, 'tujuh': 7, 'delapan': 8, 'sebilan': 9, 'sepuluh': 10,
+                'sebelas': 11, 'seratus': 100, 'seribu': 1000, 'sejuta': 1000000
+            };
+
+            const directNum = parseFloat(text);
+            if (!isNaN(directNum) && text.match(/^\d+(\.\d+)?$/)) return directNum;
+
+            const unitMatch = text.match(/(\d+(?:[\.,]\d+)?)\s*(ribu|rb|k|juta|jt)/);
+            if (unitMatch) {
+                let val = parseFloat(unitMatch[1].replace(',', '.'));
+                let unit = unitMatch[2];
+                if (unit === 'ribu' || unit === 'rb' || unit === 'k') val *= 1000;
+                if (unit === 'juta' || unit === 'jt') val *= 1000000;
+                return val;
+            }
+
+            return directNum || null;
+        }
+
+        /**
+         * PARSE VOICE SENTENCE INTO ITEM, QTY, PRICE
+         */
+        function parseVoiceInput(text) {
+            if (!text) return { item: '', qty: 1, price: 0 };
+
+            let cleaned = text.toLowerCase().trim();
+            cleaned = cleaned.replace(/^(catat|masukkan|tambah|beli|tolong catat)\s+/i, '');
+
+            let qty = 1;
+            let price = 0;
+            let item = cleaned;
+
+            const priceMatch = cleaned.match(/(?:seharga|harga|total|rp\.?)\s*([\d\.\,\s\w]+)/i);
+            if (priceMatch) {
+                price = parseIndonesianSpokenNumbers(priceMatch[1]) || 0;
+                item = cleaned.replace(priceMatch[0], '').trim();
+            }
+
+            const qtyMatch = item.match(/^(\d+|\b(satu|dua|tiga|empat|lima|enam|tujuh|delapan|sebilan|sepuluh|setengah)\b)\s*(kg|kilo|gram|liter|l|pcs|buah|bungkus|ikat|botol|pack|porsi|pasang)?\s+/i);
+            if (qtyMatch) {
+                qty = parseIndonesianSpokenNumbers(qtyMatch[1]) || 1;
+                item = item.replace(qtyMatch[0], '').trim();
+            }
+
+            if (!price) {
+                const numbersInItem = item.match(/\b\d{3,9}\b/);
+                if (numbersInItem) {
+                    price = parseFloat(numbersInItem[0]);
+                    item = item.replace(numbersInItem[0], '').trim();
+                }
+            }
+
+            item = item.replace(/\b(rupiah|rp)\b/gi, '').trim();
+
+            return {
+                item: item ? item.charAt(0).toUpperCase() + item.slice(1) : "Belanjaan",
+                qty: qty || 1,
+                price: price || 0
+            };
+        }
+
+        // --- APP INITIALIZATION ---
+        function initApp() {
+            const today = new Date().toISOString().split('T')[0];
+            inputFilterDate.value = today;
+            formInputDate.value = today;
+
+            setupSpeechRecognition();
+            renderExpenses();
+            setupEventListeners();
+        }
+
+        // --- SPEECH RECOGNITION SETUP ---
+        function setupSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showToast("Browser Anda tidak mendukung Voice AI Speech Recognition", "error");
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.lang = 'id-ID';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                isRecording = true;
+                updateMicUI(true);
+                voiceStatusBadge.innerText = "Mendengarkan...";
+                voiceStatusBadge.className = "bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full font-mono text-[10px]";
+            };
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                const currentText = finalTranscript || interimTranscript;
+                liveTranscriptText.innerText = `"${currentText}"`;
+                lastVoiceSentence = currentText;
+
+                if (activeMicTarget === 'MAIN') {
+                    const parsed = parseVoiceInput(currentText);
+                    parsedLiveItem.innerText = parsed.item;
+                    parsedLiveQty.innerText = parsed.qty;
+                    parsedLivePrice.innerText = formatRp(parsed.price);
+                }
+
+                resetSilenceTimer();
+            };
+
+            recognition.onerror = (e) => {
+                console.error("Speech Recognition Error:", e);
+                stopRecording();
+                showToast("Gagal mendeteksi suara. Coba lagi.", "error");
+            };
+
+            recognition.onend = () => {
+                isRecording = false;
+                updateMicUI(false);
+                voiceStatusBadge.innerText = "Ready";
+                voiceStatusBadge.className = "bg-brand-500/20 text-brand-100 px-2 py-0.5 rounded-full font-mono text-[10px]";
+            };
+        }
+
+        function resetSilenceTimer() {
+            clearTimeout(silenceTimer);
+            silenceTimer = setTimeout(() => {
+                if (isRecording) {
+                    stopRecording();
+                    handleVoiceProcessingEnd();
+                }
+            }, 2000);
+        }
+
+        function toggleRecording(target = 'MAIN') {
+            activeMicTarget = target;
+            if (isRecording) {
+                stopRecording();
+                handleVoiceProcessingEnd();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            if (!recognition) return;
+            try {
+                lastVoiceSentence = "";
+                liveTranscriptText.innerText = "Mendengarkan suara...";
+                parsedLiveItem.innerText = "-";
+                parsedLiveQty.innerText = "-";
+                parsedLivePrice.innerText = "-";
                 recognition.start();
+            } catch (err) {
+                console.warn(err);
             }
-        } else {
-            alert('Browser Anda tidak mendukung Web Speech API.');
-        }
-    }
-
-    function stopVoice() {
-        isRecording = false;
-        document.getElementById('micBtn').classList.remove('recording');
-    }
-
-    function parseVoiceInput(text) {
-        let parts = text.split('harga');
-        let itemPart = parts[0] || '';
-        let hargaPart = parts[1] || '';
-
-        let qty = 1;
-        let qtyMatch = itemPart.match(/(?:jumlah|qty|banyaknya)\s*(\d+)/i);
-        if(qtyMatch) {
-            qty = parseInt(qtyMatch[1]);
-            itemPart = itemPart.replace(qtyMatch[0], '');
         }
 
-        let itemNama = itemPart.trim();
-        let hargaVal = parseSpokenPrice(hargaPart || text);
-
-        if(itemNama) document.getElementById('inputItem').value = itemNama;
-        document.getElementById('inputQty').value = qty;
-        if(hargaVal > 0) document.getElementById('inputHarga').value = hargaVal;
-
-        hitungTotalInput();
-        startAutoSave();
-    }
-
-    function startAutoSave() {
-        cancelAutoSave();
-        countdownVal = 4;
-        let badge = document.getElementById('timerBadge');
-        let cdElem = document.getElementById('countdown');
-        badge.style.display = 'block';
-        cdElem.innerText = countdownVal;
-
-        autoSaveTimer = setInterval(() => {
-            countdownVal--;
-            cdElem.innerText = countdownVal;
-            if(countdownVal <= 0) {
-                cancelAutoSave();
-                tambahDataManual();
+        function stopRecording() {
+            if (recognition && isRecording) {
+                recognition.stop();
             }
-        }, 1000);
-    }
-
-    function cancelAutoSave() {
-        if(autoSaveTimer) {
-            clearInterval(autoSaveTimer);
-            autoSaveTimer = null;
+            clearTimeout(silenceTimer);
         }
-        document.getElementById('timerBadge').style.display = 'none';
-    }
 
-    renderTabel();
-</script>
+        function updateMicUI(recording) {
+            if (recording) {
+                btnMainVoiceFAB.classList.add('mic-recording');
+                fabMicIcon.className = "fa-solid fa-waveform text-xl animate-pulse";
+                fabStatusLabel.innerText = "Merekam...";
+            } else {
+                btnMainVoiceFAB.classList.remove('mic-recording');
+                fabMicIcon.className = "fa-solid fa-microphone text-xl";
+                fabStatusLabel.innerText = "Tekan Mic";
+            }
+        }
 
+        function handleVoiceProcessingEnd() {
+            if (!lastVoiceSentence) return;
+
+            if (activeMicTarget === 'MAIN') {
+                pendingParsedData = parseVoiceInput(lastVoiceSentence);
+                showReviewModal(pendingParsedData);
+            } else if (activeMicTarget === 'ITEM') {
+                formInputItem.value = lastVoiceSentence;
+                updateFormSubtotal();
+            } else if (activeMicTarget === 'QTY') {
+                const parsedQty = parseIndonesianSpokenNumbers(lastVoiceSentence);
+                if (parsedQty) formInputQty.value = parsedQty;
+                updateFormSubtotal();
+            } else if (activeMicTarget === 'PRICE') {
+                const parsedPrice = parseIndonesianSpokenNumbers(lastVoiceSentence);
+                if (parsedPrice) formInputPrice.value = parsedPrice;
+                updateFormSubtotal();
+            }
+        }
+
+        // --- REVIEW COUNTDOWN MODAL ---
+        function showReviewModal(data) {
+            reviewParsedItem.innerText = `Item: ${data.item}`;
+            reviewParsedQty.innerText = `Qty: ${data.qty}`;
+            reviewParsedPrice.innerText = `Harga: ${formatRp(data.price)}`;
+            reviewParsedTotal.innerText = formatRp(data.qty * data.price);
+
+            reviewModalOverlay.classList.remove('hidden');
+            countdownTimeLeft = 4.0;
+            updateCountdownUI();
+
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                countdownTimeLeft -= 0.1;
+                if (countdownTimeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    confirmAndSaveVoiceData();
+                } else {
+                    updateCountdownUI();
+                }
+            }, 100);
+        }
+
+        function updateCountdownUI() {
+            reviewTimerText.innerText = `${countdownTimeLeft.toFixed(1)}s`;
+            const pct = (countdownTimeLeft / 4.0) * 100;
+            reviewProgressBar.style.width = `${pct}%`;
+        }
+
+        function hideReviewModal() {
+            clearInterval(countdownInterval);
+            reviewModalOverlay.classList.add('hidden');
+        }
+
+        function confirmAndSaveVoiceData() {
+            hideReviewModal();
+            if (!pendingParsedData) return;
+
+            const newExpense = {
+                id: Date.now().toString(),
+                date: inputFilterDate.value || new Date().toISOString().split('T')[0],
+                item: pendingParsedData.item,
+                qty: pendingParsedData.qty,
+                price: pendingParsedData.price,
+                total: pendingParsedData.qty * pendingParsedData.price
+            };
+
+            expenses.unshift(newExpense);
+            saveExpenses();
+            renderExpenses();
+            showToast(`Berhasil menyimpan ${newExpense.item}`, "success");
+            pendingParsedData = null;
+        }
+
+        // --- RENDER EXPENSES & STATS ---
+        function renderExpenses() {
+            const filterDate = inputFilterDate.value;
+            const filtered = expenses.filter(e => !filterDate || e.date === filterDate);
+
+            // Calculation
+            const todayTotalVal = filtered.reduce((acc, curr) => acc + (curr.total || (curr.qty * curr.price)), 0);
+            const todayItemsVal = filtered.reduce((acc, curr) => acc + Number(curr.qty), 0);
+            const grandTotalVal = expenses.reduce((acc, curr) => acc + (curr.total || (curr.qty * curr.price)), 0);
+
+            topTodayTotal.innerText = formatRp(todayTotalVal);
+            topTodayItems.innerText = `${todayItemsVal} Item`;
+            itemCounterBadge.innerText = `${filtered.length} Data`;
+            dateHeaderTitle.innerText = filterDate ? `(${filterDate})` : "(Semua)";
+
+            // Summary Stats View
+            statGrandTotalAll.innerText = formatRp(grandTotalVal);
+            statTodayTotalAll.innerText = formatRp(todayTotalVal);
+            statTotalRowsAll.innerText = `${expenses.length} Data`;
+
+            // List Render
+            expenseCardsList.innerHTML = '';
+            if (filtered.length === 0) {
+                emptyStateMobile.classList.remove('hidden');
+            } else {
+                emptyStateMobile.classList.add('hidden');
+                filtered.forEach(exp => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-between gap-3 hover:border-brand-500/50 transition";
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/50 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0 border border-brand-100 dark:border-brand-900/50">
+                                <i class="fa-solid fa-cart-flatbed text-sm"></i>
+                            </div>
+                            <div class="truncate">
+                                <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${escapeHtml(exp.item)}</p>
+                                <p class="text-[10px] text-slate-400 dark:text-slate-400 mt-0.5">${exp.qty} x ${formatRp(exp.price)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="text-xs font-black text-brand-700 dark:text-brand-400">${formatRp(exp.qty * exp.price)}</span>
+                            <button onclick="editExpense('${exp.id}')" class="p-1.5 text-slate-400 hover:text-amber-600 active:scale-90 transition">
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button onclick="deleteExpense('${exp.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 active:scale-90 transition">
+                                <i class="fa-regular fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    `;
+                    expenseCardsList.appendChild(card);
+                });
+            }
+        }
+
+        // --- FORM LOGIC ---
+        function updateFormSubtotal() {
+            const qty = parseFloat(formInputQty.value) || 0;
+            const price = parseFloat(formInputPrice.value) || 0;
+            formSubtotalPreview.innerText = formatRp(qty * price);
+        }
+
+        function editExpense(id) {
+            const item = expenses.find(e => e.id === id);
+            if (!item) return;
+
+            formEditId.value = item.id;
+            formInputDate.value = item.date;
+            formInputItem.value = item.item;
+            formInputQty.value = item.qty;
+            formInputPrice.value = item.price;
+            updateFormSubtotal();
+
+            formHeaderTitle.innerText = "Edit Catatan Belanja";
+            btnSubmitFormText.innerText = "Update Belanjaan";
+            btnCancelEdit.classList.remove('hidden');
+
+            switchTab('FORM');
+        }
+
+        function deleteExpense(id) {
+            if (confirm("Hapus item belanjaan ini?")) {
+                expenses = expenses.filter(e => e.id !== id);
+                saveExpenses();
+                renderExpenses();
+                showToast("Item dihapus", "success");
+            }
+        }
+
+        function resetForm() {
+            formEditId.value = '';
+            formInputItem.value = '';
+            formInputQty.value = '';
+            formInputPrice.value = '';
+            formSubtotalPreview.innerText = 'Rp 0';
+            formHeaderTitle.innerText = "Input Manual Belanja";
+            btnSubmitFormText.innerText = "Simpan Belanjaan";
+            btnCancelEdit.classList.add('hidden');
+        }
+
+        // --- EVENT LISTENERS ---
+        function setupEventListeners() {
+            // Navigation
+            navTabList.addEventListener('click', () => switchTab('LIST'));
+            navTabForm.addEventListener('click', () => switchTab('FORM'));
+            navTabStats.addEventListener('click', () => switchTab('STATS'));
+
+            // Mic FAB
+            btnMainVoiceFAB.addEventListener('click', () => toggleRecording('MAIN'));
+
+            // Field Mics
+            btnMicItemOnly.addEventListener('click', () => toggleRecording('ITEM'));
+            btnMicQtyOnly.addEventListener('click', () => toggleRecording('QTY'));
+            btnMicPriceOnly.addEventListener('click', () => toggleRecording('PRICE'));
+
+            // Input Listeners
+            formInputQty.addEventListener('input', updateFormSubtotal);
+            formInputPrice.addEventListener('input', updateFormSubtotal);
+            inputFilterDate.addEventListener('change', renderExpenses);
+
+            // Form Submit
+            mobileExpenseForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = formEditId.value;
+                const newExp = {
+                    id: id || Date.now().toString(),
+                    date: formInputDate.value,
+                    item: formInputItem.value.trim(),
+                    qty: parseFloat(formInputQty.value) || 1,
+                    price: parseFloat(formInputPrice.value) || 0,
+                    total: (parseFloat(formInputQty.value) || 1) * (parseFloat(formInputPrice.value) || 0)
+                };
+
+                if (id) {
+                    const idx = expenses.findIndex(e => e.id === id);
+                    if (idx !== -1) expenses[idx] = newExp;
+                    showToast("Berhasil diupdate", "success");
+                } else {
+                    expenses.unshift(newExp);
+                    showToast("Berhasil disimpan", "success");
+                }
+
+                saveExpenses();
+                renderExpenses();
+                resetForm();
+                switchTab('LIST');
+            });
+
+            btnCancelEdit.addEventListener('click', () => {
+                resetForm();
+                switchTab('LIST');
+            });
+
+            // Review Modal Controls
+            btnModalCancel.addEventListener('click', hideReviewModal);
+            btnModalConfirm.addEventListener('click', confirmAndSaveVoiceData);
+            btnModalEdit.addEventListener('click', () => {
+                hideReviewModal();
+                if (pendingParsedData) {
+                    formInputItem.value = pendingParsedData.item;
+                    formInputQty.value = pendingParsedData.qty;
+                    formInputPrice.value = pendingParsedData.price;
+                    updateFormSubtotal();
+                    switchTab('FORM');
+                }
+            });
+
+            // Top Ellipsis Menu
+            btnOpenMenu.addEventListener('click', () => optionsMenuModal.classList.remove('hidden'));
+            menuOptClose.addEventListener('click', () => optionsMenuModal.classList.add('hidden'));
+            menuOptToday.addEventListener('click', () => {
+                inputFilterDate.value = new Date().toISOString().split('T')[0];
+                renderExpenses();
+                optionsMenuModal.classList.add('hidden');
+            });
+            menuOptAll.addEventListener('click', () => {
+                inputFilterDate.value = '';
+                renderExpenses();
+                optionsMenuModal.classList.add('hidden');
+            });
+
+            // Export & Data Reset
+            btnExportCSV.addEventListener('click', exportCSV);
+            btnDownloadHTML.addEventListener('click', downloadHTMLApp);
+            btnClearAll.addEventListener('click', () => {
+                if (confirm("Hapus seluruh data belanjaan secara permanen?")) {
+                    expenses = [];
+                    saveExpenses();
+                    renderExpenses();
+                    showToast("Semua data dihapus", "success");
+                }
+            });
+        }
+
+        function switchTab(tab) {
+            viewList.classList.add('hidden');
+            viewForm.classList.add('hidden');
+            viewStats.classList.add('hidden');
+
+            navTabList.className = "flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium hover:text-slate-600 dark:hover:text-slate-200 transition";
+            navTabForm.className = "flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium hover:text-slate-600 dark:hover:text-slate-200 transition";
+            navTabStats.className = "flex-1 flex flex-col items-center gap-1 py-1 text-slate-400 font-medium hover:text-slate-600 dark:hover:text-slate-200 transition";
+
+            if (tab === 'LIST') {
+                viewList.classList.remove('hidden');
+                navTabList.className = "flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 dark:text-brand-400 font-bold transition";
+            } else if (tab === 'FORM') {
+                viewForm.classList.remove('hidden');
+                navTabForm.className = "flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 dark:text-brand-400 font-bold transition";
+            } else if (tab === 'STATS') {
+                viewStats.classList.remove('hidden');
+                navTabStats.className = "flex-1 flex flex-col items-center gap-1 py-1 text-brand-600 dark:text-brand-400 font-bold transition";
+            }
+        }
+
+        // --- UTILS ---
+        function saveExpenses() {
+            localStorage.setItem('belanjaku_mobile_db', JSON.stringify(expenses));
+        }
+
+        function formatRp(val) {
+            return 'Rp ' + Number(val || 0).toLocaleString('id-ID');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, function(m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+        }
+
+        function showToast(msg, type = "success") {
+            const mobileToast = document.getElementById('mobileToast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMessage.innerText = msg;
+            if (type === "error") {
+                toastIcon.className = "fa-solid fa-circle-exclamation text-rose-400 text-base";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-base";
+            }
+
+            mobileToast.classList.remove('hidden');
+            setTimeout(() => {
+                mobileToast.classList.add('hidden');
+            }, 2500);
+        }
+
+        function exportCSV() {
+            if (expenses.length === 0) {
+                showToast("Tidak ada data untuk diekspor", "error");
+                return;
+            }
+            let csv = "ID,Tanggal,Nama Item,Qty,Harga Satuan,Total\n";
+            expenses.forEach(e => {
+                csv += `"${e.id}","${e.date}","${e.item.replace(/"/g, '""')}",${e.qty},${e.price},${e.qty * e.price}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `Belanjana_Kecoa_${new Date().toISOString().split('T')[0]}.csv`);
+            a.click();
+        }
+
+        function downloadHTMLApp() {
+            const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'Belanjana_Kecoa_Mobile.html');
+            a.click();
+        }
+
+        window.onload = initApp;
+    </script>
 </body>
 </html>
