@@ -699,14 +699,43 @@
         }
 
         // --- APP INITIALIZATION ---
+        // --- HELPER UNTUK AMBIL TANGGAL LOKAL (Sesuai Jam HP) ---
+        function getTodayLocalDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function resetToTodayDate() {
+            const today = getTodayLocalDate();
+            if (inputFilterDate) inputFilterDate.value = today;
+            if (formInputDate) formInputDate.value = today;
+        }
+
+        // --- APP INITIALIZATION ---
         function initApp() {
-            const today = new Date().toISOString().split('T')[0];
-            inputFilterDate.value = today;
-            formInputDate.value = today;
+            // 1. Set tanggal sesuai jam lokal HP saat ini
+            resetToTodayDate();
 
             setupSpeechRecognition();
             renderExpenses();
             setupEventListeners();
+
+            // 2. Jika aplikasi dibuka kembali di iPhone (dari background), otomatis reset ke tanggal hari ini
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    resetToTodayDate();
+                    renderExpenses();
+                }
+            });
+
+            // 3. Jika layar HP menyala/fokus kembali ke browser
+            window.addEventListener('focus', () => {
+                resetToTodayDate();
+                renderExpenses();
+            });
         }
 
         // --- SPEECH RECOGNITION SETUP ---
