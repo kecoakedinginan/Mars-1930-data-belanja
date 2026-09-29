@@ -101,6 +101,15 @@
             color: #ffffff !important;
         }
 
+        /* Subtle press feedback for all buttons */
+        button {
+            transition: transform 0.12s ease, filter 0.12s ease;
+        }
+        button:active {
+            transform: scale(0.97);
+            filter: brightness(0.96);
+        }
+
         /* Sound Wave Animation */
         .sound-bar {
             display: inline-block;
@@ -437,6 +446,11 @@
                     <p id="mainMicHoldStatus" class="text-[11px] text-slate-400 mt-1">Tekan dan tahan tombol di bawah untuk merekam</p>
                 </div>
 
+                <div id="mainMicHoldTranscript" class="min-h-[54px] bg-slate-900/80 border border-slate-800 rounded-2xl px-3 py-2 text-left">
+                    <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 mb-1">Teks yang terdengar</p>
+                    <p id="mainMicHoldTranscriptText" class="text-xs text-slate-200 leading-relaxed break-words">Mulai bicara...</p>
+                </div>
+
                 <button id="btnMainMicHold" type="button" class="w-24 h-24 mx-auto rounded-full bg-brand-600 text-white flex items-center justify-center shadow-xl shadow-brand-600/30 active:scale-95 transition select-none touch-none">
                     <i id="mainMicHoldIcon" class="fa-solid fa-microphone text-3xl"></i>
                 </button>
@@ -618,6 +632,7 @@
         const btnMainMicHold = document.getElementById('btnMainMicHold');
         const mainMicHoldStatus = document.getElementById('mainMicHoldStatus');
         const mainMicHoldIcon = document.getElementById('mainMicHoldIcon');
+        const mainMicHoldTranscriptText = document.getElementById('mainMicHoldTranscriptText');
         const btnCloseMainMicHold = document.getElementById('btnCloseMainMicHold');
         const fabMicIcon = document.getElementById('fabMicIcon');
         const fabStatusLabel = document.getElementById('fabStatusLabel');
@@ -845,6 +860,9 @@
 
                 const currentText = finalTranscript || interimTranscript;
                 liveTranscriptText.innerText = `"${currentText}"`;
+                if (mainMicHoldTranscriptText && activeMicTarget === 'MAIN') {
+                    mainMicHoldTranscriptText.innerText = currentText || 'Mendengarkan...';
+                }
                 lastVoiceSentence = currentText;
 
                 if (activeMicTarget === 'MAIN') {
@@ -891,6 +909,7 @@
             mainMicHoldModal.classList.remove('hidden');
             mainMicHoldStatus.innerText = "Tekan dan tahan tombol di bawah untuk merekam";
             mainMicHoldIcon.className = "fa-solid fa-microphone text-3xl";
+            if (mainMicHoldTranscriptText) mainMicHoldTranscriptText.innerText = "Mulai bicara...";
             btnMainMicHold.classList.remove('mic-recording');
         }
 
@@ -901,6 +920,7 @@
             mainMicHoldModal.classList.add('hidden');
             mainMicHoldStatus.innerText = "Tekan dan tahan tombol di bawah untuk merekam";
             mainMicHoldIcon.className = "fa-solid fa-microphone text-3xl";
+            if (mainMicHoldTranscriptText) mainMicHoldTranscriptText.innerText = "Mulai bicara...";
             btnMainMicHold.classList.remove('mic-recording');
         }
 
@@ -910,6 +930,7 @@
             activeMicTarget = 'MAIN';
             mainMicHoldStatus.innerText = "Merekam... Lepaskan untuk selesai";
             mainMicHoldIcon.className = "fa-solid fa-waveform text-3xl animate-pulse";
+            if (mainMicHoldTranscriptText) mainMicHoldTranscriptText.innerText = "Mendengarkan...";
             btnMainMicHold.classList.add('mic-recording');
             startRecording();
         }
