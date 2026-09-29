@@ -244,6 +244,17 @@
                     <span id="itemCounterBadge" class="bg-brand-100 dark:bg-brand-900/60 text-brand-800 dark:text-brand-100 text-[10px] font-bold px-2 py-0.5 rounded-full">0 Data</span>
                 </div>
 
+                <!-- Checklist Controls -->
+                <div id="checklistControls" class="flex items-center justify-between px-1 hidden">
+                    <label class="flex items-center gap-2 text-[11px] font-semibold text-slate-600 dark:text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="checkAllExpenses" class="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                        Pilih semua
+                    </label>
+                    <button id="btnDeleteSelected" type="button" class="text-[11px] font-bold text-rose-600 dark:text-rose-400 hidden">
+                        <i class="fa-regular fa-trash-can mr-1"></i> Hapus yang dipilih
+                    </button>
+                </div>
+
                 <!-- Shopping Items Cards Container -->
                 <div id="expenseCardsList" class="space-y-2.5">
                     <!-- Cards rendered via JavaScript -->
@@ -348,6 +359,22 @@
                             <span id="statTotalRowsAll" class="text-xs font-bold text-slate-800 dark:text-slate-200">0 Data</span>
                         </div>
                     </div>
+
+                    <div class="pt-1 border-t border-slate-100 dark:border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Ringkasan Item</span>
+                            <span class="text-[10px] text-slate-400">Qty & Total</span>
+                        </div>
+                        <div id="recapItemSummary" class="space-y-1.5"></div>
+                    </div>
+
+                    <div class="pt-1 border-t border-slate-100 dark:border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Grafik Pengeluaran</span>
+                            <span class="text-[10px] text-slate-400">Per item</span>
+                        </div>
+                        <div id="recapBarChart" class="space-y-2"></div>
+                    </div>
                 </div>
 
                 <!-- Theme Color Selector Section -->
@@ -399,9 +426,29 @@
 
         </main>
 
+        <!-- Voice Mic Hold Modal -->
+        <div id="mainMicHoldModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="w-full max-w-[360px] bg-slate-950 text-white rounded-[2rem] p-6 border border-brand-500/30 shadow-2xl text-center space-y-4">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-brand-500/15 text-brand-400 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-microphone text-xl"></i>
+                    </div>
+                    <h3 class="text-sm font-black">Siap Merekam</h3>
+                    <p id="mainMicHoldStatus" class="text-[11px] text-slate-400 mt-1">Tekan dan tahan tombol di bawah untuk merekam</p>
+                </div>
+
+                <button id="btnMainMicHold" type="button" class="w-24 h-24 mx-auto rounded-full bg-brand-600 text-white flex items-center justify-center shadow-xl shadow-brand-600/30 active:scale-95 transition select-none touch-none">
+                    <i id="mainMicHoldIcon" class="fa-solid fa-microphone text-3xl"></i>
+                </button>
+
+                <p class="text-[10px] text-slate-500">Lepaskan tombol setelah selesai berbicara</p>
+                <button id="btnCloseMainMicHold" type="button" class="text-[11px] font-semibold text-slate-400 hover:text-white px-4 py-2">Batal</button>
+            </div>
+        </div>
+
         <!-- Floating Review & Countdown Modal (Pops up when voice input succeeds) -->
-        <div id="reviewModalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center hidden">
-            <div class="w-full max-w-[480px] bg-slate-950 text-white rounded-t-[2rem] p-5 border-t border-brand-500/30 shadow-2xl modal-slide-up space-y-3">
+        <div id="reviewModalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="w-full max-w-[420px] bg-slate-950 text-white rounded-[2rem] p-5 border border-brand-500/30 shadow-2xl space-y-3">
                 
                 <!-- Countdown Header Bar -->
                 <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
@@ -432,7 +479,10 @@
                 </div>
 
                 <!-- Action Control Buttons -->
-                <div class="grid grid-cols-3 gap-2 pt-1">
+                <div class="grid grid-cols-4 gap-2 pt-1">
+                    <button id="btnModalRepeat" type="button" class="py-2.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1" title="Rekam ulang">
+                        <i class="fa-solid fa-rotate-right"></i> Ulangi
+                    </button>
                     <button id="btnModalCancel" type="button" class="py-2.5 bg-rose-600/90 hover:bg-rose-600 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1">
                         <i class="fa-solid fa-xmark"></i> Batal
                     </button>
@@ -502,6 +552,7 @@
         let activeMicTarget = 'MAIN'; // 'MAIN', 'ITEM', 'QTY', 'PRICE'
         let silenceTimer = null;
         let lastVoiceSentence = "";
+        let selectedExpenseIds = new Set();
 
         // Review Countdown State
         let countdownInterval = null;
@@ -549,6 +600,9 @@
         const emptyStateMobile = document.getElementById('emptyStateMobile');
         const itemCounterBadge = document.getElementById('itemCounterBadge');
         const dateHeaderTitle = document.getElementById('dateHeaderTitle');
+        const checklistControls = document.getElementById('checklistControls');
+        const checkAllExpenses = document.getElementById('checkAllExpenses');
+        const btnDeleteSelected = document.getElementById('btnDeleteSelected');
 
         // Navigation Tabs
         const viewList = document.getElementById('viewList');
@@ -560,6 +614,11 @@
 
         // Main FAB Mic Elements
         const btnMainVoiceFAB = document.getElementById('btnMainVoiceFAB');
+        const mainMicHoldModal = document.getElementById('mainMicHoldModal');
+        const btnMainMicHold = document.getElementById('btnMainMicHold');
+        const mainMicHoldStatus = document.getElementById('mainMicHoldStatus');
+        const mainMicHoldIcon = document.getElementById('mainMicHoldIcon');
+        const btnCloseMainMicHold = document.getElementById('btnCloseMainMicHold');
         const fabMicIcon = document.getElementById('fabMicIcon');
         const fabStatusLabel = document.getElementById('fabStatusLabel');
 
@@ -596,6 +655,7 @@
         const reviewParsedQty = document.getElementById('reviewParsedQty');
         const reviewParsedPrice = document.getElementById('reviewParsedPrice');
         const reviewParsedTotal = document.getElementById('reviewParsedTotal');
+        const btnModalRepeat = document.getElementById('btnModalRepeat');
         const btnModalCancel = document.getElementById('btnModalCancel');
         const btnModalEdit = document.getElementById('btnModalEdit');
         const btnModalConfirm = document.getElementById('btnModalConfirm');
@@ -604,6 +664,8 @@
         const statGrandTotalAll = document.getElementById('statGrandTotalAll');
         const statTodayTotalAll = document.getElementById('statTodayTotalAll');
         const statTotalRowsAll = document.getElementById('statTotalRowsAll');
+        const recapItemSummary = document.getElementById('recapItemSummary');
+        const recapBarChart = document.getElementById('recapBarChart');
         const btnExportCSV = document.getElementById('btnExportCSV');
         const btnDownloadHTML = document.getElementById('btnDownloadHTML');
         const btnClearAll = document.getElementById('btnClearAll');
@@ -675,10 +737,21 @@
                 item = cleaned.replace(priceMatch[0], '').trim();
             }
 
-            const qtyMatch = item.match(/^(\d+|\b(satu|dua|tiga|empat|lima|enam|tujuh|delapan|sebilan|sepuluh|setengah)\b)\s*(kg|kilo|gram|liter|l|pcs|buah|bungkus|ikat|botol|pack|porsi|pasang)?\s+/i);
-            if (qtyMatch) {
-                qty = parseIndonesianSpokenNumbers(qtyMatch[1]) || 1;
-                item = item.replace(qtyMatch[0], '').trim();
+            // Quantity can be spoken before OR after the item, e.g.
+            // "satu susu", "susu satu", "susu dua botol".
+            const qtyWords = '(\\d+|\\b(satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sebilan|sepuluh|setengah)\\b)';
+            const qtyUnits = '(kg|kilo|gram|liter|l|pcs|buah|bungkus|ikat|botol|pack|porsi|pasang)?';
+
+            const qtyPrefixMatch = item.match(new RegExp('^' + qtyWords + '\\s*' + qtyUnits + '\\s+', 'i'));
+            if (qtyPrefixMatch) {
+                qty = parseIndonesianSpokenNumbers(qtyPrefixMatch[1]) || 1;
+                item = item.replace(qtyPrefixMatch[0], '').trim();
+            } else {
+                const qtySuffixMatch = item.match(new RegExp('\\s+' + qtyWords + '\\s*' + qtyUnits + '$', 'i'));
+                if (qtySuffixMatch) {
+                    qty = parseIndonesianSpokenNumbers(qtySuffixMatch[1]) || 1;
+                    item = item.replace(qtySuffixMatch[0], '').trim();
+                }
             }
 
             if (!price) {
@@ -726,14 +799,14 @@
             // 2. Jika aplikasi dibuka kembali di iPhone (dari background), otomatis reset ke tanggal hari ini
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'visible') {
-                    resetToTodayDate();
+                    // Keep the user's selected date when returning to the app.
                     renderExpenses();
                 }
             });
 
             // 3. Jika layar HP menyala/fokus kembali ke browser
             window.addEventListener('focus', () => {
-                resetToTodayDate();
+                // Keep the user's selected date when returning to the app.
                 renderExpenses();
             });
         }
@@ -800,12 +873,58 @@
 
         function resetSilenceTimer() {
             clearTimeout(silenceTimer);
+            // Main voice recording is controlled by press-and-hold/release.
+            if (activeMicTarget === 'MAIN') return;
             silenceTimer = setTimeout(() => {
                 if (isRecording) {
                     stopRecording();
                     handleVoiceProcessingEnd();
                 }
             }, 2000);
+        }
+
+        function openMainMicHoldModal() {
+            if (!recognition) {
+                showToast("Browser Anda tidak mendukung Voice AI Speech Recognition", "error");
+                return;
+            }
+            mainMicHoldModal.classList.remove('hidden');
+            mainMicHoldStatus.innerText = "Tekan dan tahan tombol di bawah untuk merekam";
+            mainMicHoldIcon.className = "fa-solid fa-microphone text-3xl";
+            btnMainMicHold.classList.remove('mic-recording');
+        }
+
+        function closeMainMicHoldModal() {
+            if (isRecording && activeMicTarget === 'MAIN') {
+                stopRecording();
+            }
+            mainMicHoldModal.classList.add('hidden');
+            mainMicHoldStatus.innerText = "Tekan dan tahan tombol di bawah untuk merekam";
+            mainMicHoldIcon.className = "fa-solid fa-microphone text-3xl";
+            btnMainMicHold.classList.remove('mic-recording');
+        }
+
+        function beginMainHoldRecording(event) {
+            event.preventDefault();
+            if (isRecording) return;
+            activeMicTarget = 'MAIN';
+            mainMicHoldStatus.innerText = "Merekam... Lepaskan untuk selesai";
+            mainMicHoldIcon.className = "fa-solid fa-waveform text-3xl animate-pulse";
+            btnMainMicHold.classList.add('mic-recording');
+            startRecording();
+        }
+
+        function endMainHoldRecording(event) {
+            if (event) event.preventDefault();
+            if (!isRecording || activeMicTarget !== 'MAIN') return;
+            stopRecording();
+            mainMicHoldStatus.innerText = "Memproses hasil suara...";
+            mainMicHoldIcon.className = "fa-solid fa-spinner animate-spin text-3xl";
+            btnMainMicHold.classList.remove('mic-recording');
+            setTimeout(() => {
+                closeMainMicHoldModal();
+                handleVoiceProcessingEnd();
+            }, 100);
         }
 
         function toggleRecording(target = 'MAIN') {
@@ -930,7 +1049,11 @@
             const filterDate = inputFilterDate.value;
             const filtered = expenses.filter(e => !filterDate || e.date === filterDate);
 
-            // Calculation
+            // Remove selections for items that no longer exist in the current data.
+            selectedExpenseIds.forEach(id => {
+                if (!expenses.some(e => e.id === id)) selectedExpenseIds.delete(id);
+            });
+
             const todayTotalVal = filtered.reduce((acc, curr) => acc + (curr.total || (curr.qty * curr.price)), 0);
             const todayItemsVal = filtered.reduce((acc, curr) => acc + Number(curr.qty), 0);
             const grandTotalVal = expenses.reduce((acc, curr) => acc + (curr.total || (curr.qty * curr.price)), 0);
@@ -940,22 +1063,37 @@
             itemCounterBadge.innerText = `${filtered.length} Data`;
             dateHeaderTitle.innerText = filterDate ? `(${filterDate})` : "(Semua)";
 
-            // Summary Stats View
             statGrandTotalAll.innerText = formatRp(grandTotalVal);
             statTodayTotalAll.innerText = formatRp(todayTotalVal);
             statTotalRowsAll.innerText = `${expenses.length} Data`;
+            renderRecapItemSummary();
+            renderRecapBarChart();
 
-            // List Render
+            // Checklist controls are shown only when there are items.
+            if (filtered.length > 0) {
+                checklistControls.classList.remove('hidden');
+            } else {
+                checklistControls.classList.add('hidden');
+            }
+
             expenseCardsList.innerHTML = '';
+
             if (filtered.length === 0) {
                 emptyStateMobile.classList.remove('hidden');
             } else {
                 emptyStateMobile.classList.add('hidden');
+
                 filtered.forEach(exp => {
+                    const isChecked = selectedExpenseIds.has(exp.id);
                     const card = document.createElement('div');
                     card.className = "bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-between gap-3 hover:border-brand-500/50 transition";
+
                     card.innerHTML = `
                         <div class="flex items-center gap-3 overflow-hidden">
+                            <input type="checkbox"
+                                class="expense-checkbox w-4 h-4 shrink-0 rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
+                                data-expense-id="${escapeHtml(exp.id)}"
+                                ${isChecked ? 'checked' : ''}>
                             <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/50 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0 border border-brand-100 dark:border-brand-900/50">
                                 <i class="fa-solid fa-cart-flatbed text-sm"></i>
                             </div>
@@ -974,9 +1112,99 @@
                             </button>
                         </div>
                     `;
+
+                    card.querySelector('.expense-checkbox').addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            selectedExpenseIds.add(exp.id);
+                        } else {
+                            selectedExpenseIds.delete(exp.id);
+                        }
+                        updateChecklistUI(filtered);
+                    });
+
                     expenseCardsList.appendChild(card);
                 });
             }
+
+            updateChecklistUI(filtered);
+        }
+
+        function renderRecapItemSummary() {
+            const grouped = {};
+
+            expenses.forEach(exp => {
+                const key = String(exp.item || 'Belanjaan').trim().toLowerCase();
+                if (!grouped[key]) {
+                    grouped[key] = { item: String(exp.item || 'Belanjaan').trim(), qty: 0, total: 0 };
+                }
+                grouped[key].qty += Number(exp.qty) || 0;
+                grouped[key].total += Number(exp.total || ((Number(exp.qty) || 0) * (Number(exp.price) || 0)));
+            });
+
+            const rows = Object.values(grouped).sort((a, b) => b.total - a.total);
+            recapItemSummary.innerHTML = rows.length ? rows.map(row => `
+                <div class="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl flex justify-between items-center gap-3">
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">${escapeHtml(row.item)}</span>
+                    <div class="text-right shrink-0">
+                        <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400">${row.qty} Qty</div>
+                        <div class="text-xs font-black text-brand-700 dark:text-brand-400">${formatRp(row.total)}</div>
+                    </div>
+                </div>
+            `).join('') : '<div class="text-[11px] text-slate-400 text-center py-2">Belum ada data belanja</div>';
+        }
+
+        function renderRecapBarChart() {
+            const grouped = {};
+            expenses.forEach(exp => {
+                const key = String(exp.item || 'Belanjaan').trim().toLowerCase();
+                if (!grouped[key]) grouped[key] = { item: String(exp.item || 'Belanjaan').trim(), total: 0 };
+                grouped[key].total += Number(exp.total || ((Number(exp.qty) || 0) * (Number(exp.price) || 0)));
+            });
+
+            const rows = Object.values(grouped).sort((a, b) => b.total - a.total).slice(0, 6);
+            const maxTotal = rows.length ? rows[0].total : 0;
+            recapBarChart.innerHTML = rows.length ? rows.map(row => {
+                const width = maxTotal ? Math.max(6, (row.total / maxTotal) * 100) : 0;
+                return `
+                    <div>
+                        <div class="flex justify-between items-center gap-2 mb-1">
+                            <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300 truncate">${escapeHtml(row.item)}</span>
+                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 shrink-0">${formatRp(row.total)}</span>
+                        </div>
+                        <div class="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-brand-500 rounded-full transition-all duration-300" style="width:${width}%"></div>
+                        </div>
+                    </div>`;
+            }).join('') : '<div class="text-[11px] text-slate-400 text-center py-2">Belum ada data untuk grafik</div>';
+        }
+
+        function updateChecklistUI(filtered) {
+            const selectedVisibleCount = filtered.filter(e => selectedExpenseIds.has(e.id)).length;
+            const hasSelection = selectedVisibleCount > 0;
+
+            btnDeleteSelected.classList.toggle('hidden', !hasSelection);
+            btnDeleteSelected.innerHTML = hasSelection
+                ? `<i class="fa-regular fa-trash-can mr-1"></i> Hapus yang dipilih (${selectedVisibleCount})`
+                : `<i class="fa-regular fa-trash-can mr-1"></i> Hapus yang dipilih`;
+
+            checkAllExpenses.checked = filtered.length > 0 && selectedVisibleCount === filtered.length;
+            checkAllExpenses.indeterminate = selectedVisibleCount > 0 && selectedVisibleCount < filtered.length;
+        }
+
+        function deleteSelectedExpenses() {
+            const selectedIds = new Set(selectedExpenseIds);
+            if (selectedIds.size === 0) return;
+
+            const count = selectedIds.size;
+            if (!confirm(`Hapus ${count} item belanjaan yang dipilih?`)) return;
+
+            expenses = expenses.filter(e => !selectedIds.has(e.id));
+            selectedExpenseIds.clear();
+            saveExpenses();
+
+            // Keep the currently selected date. Do NOT reset it to today.
+            renderExpenses();
+            showToast(`${count} item dihapus`, "success");
         }
 
         // --- FORM LOGIC ---
@@ -1031,8 +1259,15 @@
             navTabForm.addEventListener('click', () => switchTab('FORM'));
             navTabStats.addEventListener('click', () => switchTab('STATS'));
 
-            // Mic FAB
-            btnMainVoiceFAB.addEventListener('click', () => toggleRecording('MAIN'));
+            // Main Mic: tap opens the mic popup; hold to record, release to finish.
+            btnMainVoiceFAB.addEventListener('click', openMainMicHoldModal);
+            btnCloseMainMicHold.addEventListener('click', closeMainMicHoldModal);
+            btnMainMicHold.addEventListener('pointerdown', beginMainHoldRecording);
+            btnMainMicHold.addEventListener('pointerup', endMainHoldRecording);
+            btnMainMicHold.addEventListener('pointercancel', endMainHoldRecording);
+            btnMainMicHold.addEventListener('pointerleave', (e) => {
+                if (e.buttons) endMainHoldRecording(e);
+            });
 
             // Field Mics
             btnMicItemOnly.addEventListener('click', () => toggleRecording('ITEM'));
@@ -1042,7 +1277,24 @@
             // Input Listeners
             formInputQty.addEventListener('input', updateFormSubtotal);
             formInputPrice.addEventListener('input', updateFormSubtotal);
-            inputFilterDate.addEventListener('change', renderExpenses);
+            inputFilterDate.addEventListener('change', () => {
+                selectedExpenseIds.clear();
+                renderExpenses();
+            });
+
+            checkAllExpenses.addEventListener('change', () => {
+                const filterDate = inputFilterDate.value;
+                const filtered = expenses.filter(e => !filterDate || e.date === filterDate);
+
+                if (checkAllExpenses.checked) {
+                    filtered.forEach(e => selectedExpenseIds.add(e.id));
+                } else {
+                    filtered.forEach(e => selectedExpenseIds.delete(e.id));
+                }
+                renderExpenses();
+            });
+
+            btnDeleteSelected.addEventListener('click', deleteSelectedExpenses);
 
             // Form Submit
             mobileExpenseForm.addEventListener('submit', (e) => {
@@ -1078,6 +1330,11 @@
             });
 
             // Review Modal Controls
+            btnModalRepeat.addEventListener('click', () => {
+                hideReviewModal();
+                pendingParsedData = null;
+                openMainMicHoldModal();
+            });
             btnModalCancel.addEventListener('click', hideReviewModal);
             btnModalConfirm.addEventListener('click', confirmAndSaveVoiceData);
             btnModalEdit.addEventListener('click', () => {
